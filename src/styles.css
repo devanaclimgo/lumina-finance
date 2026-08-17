@@ -1,3 +1,271 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@import 'tailwindcss';
+@layer base {
+  :root {
+    --radius: 1rem;
+
+    --background: 0.975 0.008 300;
+    --foreground: 0.22 0.03 285;
+
+    --card: 1 0 0;
+    --card-foreground: 0.22 0.03 285;
+
+    --popover: 1 0 0;
+    --popover-foreground: 0.22 0.03 285;
+
+    --primary: 0.53 0.22 292;
+    --primary-foreground: 0.99 0.005 300;
+    --primary-soft: 0.94 0.03 295;
+    --primary-glow: 0.66 0.19 285;
+
+    --secondary: 0.96 0.012 295;
+    --secondary-foreground: 0.32 0.06 290;
+
+    --muted: 0.965 0.008 295;
+    --muted-foreground: 0.55 0.026 288;
+
+    --accent: 0.95 0.022 295;
+    --accent-foreground: 0.38 0.12 292;
+
+    --destructive: 0.6 0.21 22;
+    --destructive-foreground: 0.99 0 0;
+
+    --success: 0.63 0.15 158;
+    --success-foreground: 0.99 0 0;
+
+    --warning: 0.75 0.16 75;
+    --warning-foreground: 0.25 0.05 75;
+
+    --info: 0.62 0.16 252;
+    --info-foreground: 0.99 0 0;
+
+    --border: 0.92 0.012 295;
+    --input: 0.92 0.012 295;
+    --ring: 0.53 0.22 292;
+
+    --chart-1: 0.53 0.22 292;
+    --chart-2: 0.66 0.19 285;
+    --chart-3: 0.63 0.15 158;
+    --chart-4: 0.68 0.19 22;
+    --chart-5: 0.75 0.16 75;
+    --chart-6: 0.62 0.16 252;
+
+    --sidebar: 0.99 0.005 300;
+    --sidebar-foreground: 0.3 0.03 288;
+
+    --sidebar-primary: 0.53 0.22 292;
+    --sidebar-primary-foreground: 0.99 0 0;
+
+    --sidebar-accent: 0.955 0.02 295;
+    --sidebar-accent-foreground: 0.38 0.12 292;
+
+    --sidebar-border: 0.93 0.012 295;
+    --sidebar-ring: 0.53 0.22 292;
+
+    --gradient-primary: linear-gradient(
+      135deg,
+      oklch(0.5 0.23 288),
+      oklch(0.62 0.2 300)
+    );
+
+    --gradient-surface: linear-gradient(
+      160deg,
+      oklch(1 0 0 / 0.9),
+      oklch(0.97 0.015 295 / 0.6)
+    );
+
+    --shadow-soft:
+      0 1px 2px oklch(0.4 0.06 290 / 0.05),
+      0 8px 24px -12px oklch(0.4 0.1 290 / 0.14);
+
+    --shadow-lift:
+      0 2px 4px oklch(0.4 0.06 290 / 0.06),
+      0 20px 40px -20px oklch(0.4 0.12 290 / 0.28);
+
+    --shadow-glow:
+      0 18px 40px -18px oklch(0.53 0.22 292 / 0.55);
+  }
+
+  .dark {
+    --background: 0.17 0.024 285;
+    --foreground: 0.95 0.008 290;
+
+    --card: 0.213 0.028 287;
+    --card-foreground: 0.95 0.008 290;
+
+    --popover: 0.223 0.03 287;
+    --popover-foreground: 0.95 0.008 290;
+
+    --primary: 0.66 0.19 291;
+    --primary-foreground: 0.15 0.03 288;
+    --primary-soft: 0.3 0.07 290;
+    --primary-glow: 0.74 0.15 295;
+
+    --secondary: 0.26 0.03 288;
+    --secondary-foreground: 0.93 0.01 290;
+
+    --muted: 0.25 0.028 288;
+    --muted-foreground: 0.68 0.025 290;
+
+    --accent: 0.29 0.05 290;
+    --accent-foreground: 0.88 0.06 292;
+
+    --destructive: 0.66 0.2 22;
+    --destructive-foreground: 0.15 0.02 22;
+
+    --success: 0.7 0.15 158;
+    --success-foreground: 0.15 0.03 158;
+
+    --warning: 0.79 0.15 78;
+    --warning-foreground: 0.2 0.04 78;
+
+    --info: 0.68 0.15 252;
+    --info-foreground: 0.15 0.03 252;
+
+    --border: 0.32 0.03 290 / 0.7;
+    --input: 0.34 0.03 290 / 0.8;
+    --ring: 0.66 0.19 291;
+
+    --chart-1: 0.68 0.19 291;
+    --chart-2: 0.76 0.14 295;
+    --chart-3: 0.72 0.15 158;
+    --chart-4: 0.7 0.18 22;
+    --chart-5: 0.8 0.15 78;
+    --chart-6: 0.7 0.15 252;
+
+    --sidebar: 0.196 0.026 286;
+    --sidebar-foreground: 0.88 0.012 290;
+
+    --sidebar-primary: 0.66 0.19 291;
+    --sidebar-primary-foreground: 0.15 0.03 288;
+
+    --sidebar-accent: 0.28 0.045 290;
+    --sidebar-accent-foreground: 0.9 0.05 292;
+
+    --sidebar-border: 0.3 0.03 290 / 0.6;
+    --sidebar-ring: 0.66 0.19 291;
+
+    --gradient-primary: linear-gradient(
+      135deg,
+      oklch(0.52 0.22 288),
+      oklch(0.66 0.19 300)
+    );
+
+    --gradient-surface: linear-gradient(
+      160deg,
+      oklch(0.26 0.035 290 / 0.8),
+      oklch(0.21 0.03 288 / 0.5)
+    );
+
+    --shadow-soft:
+      0 1px 2px oklch(0 0 0 / 0.3),
+      0 10px 30px -16px oklch(0 0 0 / 0.6);
+
+    --shadow-lift:
+      0 2px 6px oklch(0 0 0 / 0.4),
+      0 24px 48px -24px oklch(0 0 0 / 0.7);
+
+    --shadow-glow:
+      0 18px 44px -18px oklch(0.6 0.2 292 / 0.6);
+  }
+
+  html {
+    font-family:
+      "Plus Jakarta Sans",
+      ui-sans-serif,
+      system-ui,
+      sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+
+    font-feature-settings:
+      "cv02",
+      "cv03",
+      "cv04",
+      "cv11";
+  }
+
+  ::selection {
+    background: oklch(var(--primary) / 0.26);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: oklch(var(--muted-foreground) / 0.3);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+}
+
+@layer utilities {
+
+  .surface-hover {
+    transition:
+      box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 300ms ease;
+  }
+
+  .surface-hover:hover {
+    border-color: oklch(var(--primary) / 0.26);
+  }
+
+  .gradient-primary {
+    background-image: var(--gradient-primary);
+  }
+
+  .text-gradient {
+    background-image: var(--gradient-primary);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .glass {
+    background: oklch(var(--card) / 0.72);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid oklch(var(--border) / 0.8);
+  }
+
+  .num {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  .animate-rise {
+    animation: rise-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skeleton-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      oklch(var(--foreground) / 0.08),
+      transparent
+    );
+    animation: shimmer 1.6s infinite;
+  }
+}
