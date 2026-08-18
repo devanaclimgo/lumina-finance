@@ -1,14 +1,14 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-luma-mark',
-
   standalone: true,
-
+  imports: [CommonModule],
   template: `
     <div
       class="grid place-items-center rounded-xl gradient-primary shadow-[var(--shadow-glow)]"
-      [class]="className"
+      [ngClass]="className"
     >
       <svg viewBox="0 0 24 24" class="h-1/2 w-1/2" fill="none" aria-hidden="true">
         <path
