@@ -1,0 +1,18 @@
+<div
+  class="inline-flex items-center gap-0.5 rounded-full border border-border bg-muted/60 p-1"
+>
+  @for (period of periods; track period.key) {
+    <button
+      type="button"
+      (click)="selectPeriod(period.key)"
+      class="relative rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300"
+      [class.px-2.5]="compact"
+      [class.bg-card]="value === period.key"
+      [class.text-foreground]="value === period.key"
+      [class.period-active]="value === period.key"
+      [class.text-muted-foreground]="value !== period.key"
+    >
+      {{ period.label }}
+    </button>
+  }
+</div>
