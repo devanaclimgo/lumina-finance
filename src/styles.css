@@ -203,6 +203,10 @@
     background-image: var(--gradient-primary);
   }
 
+  .period-active {
+    box-shadow: var(--shadow-soft);
+  }
+
   .text-gradient {
     background-image: var(--gradient-primary);
     background-clip: text;
