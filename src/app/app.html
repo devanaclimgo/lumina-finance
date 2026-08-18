@@ -1,43 +1,15 @@
-<app-luma-mark />
+<div class="flex min-h-screen bg-background text-foreground">
 
-<app-page-header
-  title="Dashboard"
-  subtitle="Overview of your finances"
->
-  <div header-actions>
-    <button>
-      Add transaction
-    </button>
-  </div>
-</app-page-header>
+  <app-sidebar [collapsed]="sidebarCollapsed" [workspace]="workspace" [userName]="userName" [plan]="plan" (toggle)="sidebarCollapsed = !sidebarCollapsed" />
 
-<app-section-card
-  title="Monthly overview"
-  description="Your income and expenses"
->
-  <div card-actions>
-    <button>
-      View all
-    </button>
-  </div>
+  <main class="min-w-0 flex-1" [class.lg:pl-0]="true">
+    <div class="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
 
-  <app-overview-chart
-    [data]="overviewData"
-  />
-</app-section-card>
+      <router-outlet />
 
-<app-empty-state
-  title="No transactions yet"
-  description="Your transactions will appear here."
->
-  <svg empty-icon></svg>
+    </div>
+  </main>
 
-  <button empty-action>
-    Add transaction
-  </button>
-</app-empty-state>
+  <app-mobile-nav [workspace]="workspace" />
 
-<app-period-selector
-  [value]="period"
-  (valueChange)="onPeriodChange($event)"
-/>
+</div>
