@@ -1,0 +1,38 @@
+<nav class="glass fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t px-2 pb-[env(safe-area-inset-bottom)] pt-2 lg:hidden">
+  @for (item of items; track item.to) {
+  <a [routerLink]="item.to" routerLinkActive="text-primary" [routerLinkActiveOptions]="{
+        exact: item.to === '/'
+      }" class="flex min-w-0 flex-1 flex-col items-center gap-1 rounded-xl px-1 py-1.5 text-[10px] font-medium text-muted-foreground transition-colors">
+
+    @switch (item.label) {
+    @case ('Dashboard') {
+    <svg lucideLayoutDashboard></svg>
+    }
+
+    @case ('Transactions') {
+    <svg lucideArrowLeftRight></svg>
+    }
+
+    @case ('Wallets') {
+    <svg lucideWallet></svg>
+    }
+
+    @case ('Budget') {
+    <svg lucidePiggyBank></svg>
+    }
+
+    @case ('Investments') {
+    <svg lucideLineChart></svg>
+    }
+
+    @case ('Analytics') {
+    <svg lucideBarChart3></svg>
+    }
+    }
+
+    <span class="truncate">
+      {{ item.label }}
+    </span>
+  </a>
+  }
+</nav>
