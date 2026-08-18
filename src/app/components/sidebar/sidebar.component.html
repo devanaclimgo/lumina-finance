@@ -1,0 +1,126 @@
+<aside class="sticky top-0 hidden h-screen shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:flex" [class.w-[76px]]="collapsed" [class.w-[248px]]="!collapsed">
+  <!-- Header -->
+  <div class="flex h-16 items-center gap-3 px-4">
+    <app-luma-mark class="h-9 w-9 shrink-0" />
+
+    @if (!collapsed) {
+    <div class="min-w-0">
+      <p class="truncate text-[15px] font-bold tracking-tight">
+        Luma
+      </p>
+
+      <p class="truncate text-[11px] text-muted-foreground">
+        Finance OS
+      </p>
+    </div>
+    }
+
+    <button type="button" (click)="onToggle()" [attr.aria-label]="collapsed ? 'Expand sidebar' : 'Collapse sidebar'" class="ml-auto grid h-7 w-7 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" [class.absolute]="collapsed" [class.-right-3]="collapsed" [class.top-5]="collapsed" [class.z-20]="collapsed" [class.border]="collapsed" [class.border-sidebar-border]="collapsed" [class.bg-sidebar]="collapsed" [class.shadow-soft]="collapsed">
+      <svg lucideChevronLeft class="h-4 w-4 transition-transform duration-500" [class.rotate-180]="collapsed"></svg>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="mt-2 flex-1 space-y-1 overflow-y-auto px-3">
+
+    @if (!collapsed) {
+    <p class="px-3 pb-2 pt-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+      {{ workspace === 'business' ? 'Business' : 'Personal' }}
+    </p>
+    }
+
+    @for (item of filteredNavItems; track item.to) {
+    <a [routerLink]="item.to" [title]="collapsed ? item.label : null" routerLinkActive="bg-sidebar-accent text-sidebar-accent-foreground" [routerLinkActiveOptions]="{
+          exact: item.to === '/'
+        }" class="group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground">
+      <span class="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-sidebar-primary transition-all duration-300"></span>
+
+      @switch (item.label) {
+
+      @case ('Dashboard') {
+      <svg lucideLayoutDashboard class="h-[18px] w-[18px] shrink-0"></svg>
+      }
+
+      @case ('Transactions') {
+      <svg lucideArrowLeftRight class="h-[18px] w-[18px] shrink-0"></svg>
+      }
+
+      @case ('Wallets') {
+      <svg lucideWallet class="h-[18px] w-[18px] shrink-0"></svg>
+      }
+
+      @case ('Budget') {
+      <svg lucidePiggyBank class="h-[18px] w-[18px] shrink-0"></svg>
+      }
+
+      @case ('Investments') {
+      <svg lucideLineChart class="h-[18px] w-[18px] shrink-0"></svg>
+      }
+
+      @case ('Analytics') {
+      <svg lucideBarChart3 class="h-[18px] w-[18px] shrink-0"></svg>
+      }
+
+      @case ('Reports') {
+      <svg lucideFileText class="h-[18px] w-[18px] shrink-0"></svg>
+      }
+
+      @case ('Business') {
+      <svg lucideBriefcase class="h-[18px] w-[18px] shrink-0"></svg>
+      }
+      }
+
+      @if (!collapsed) {
+      <span class="truncate">
+        {{ item.label }}
+      </span>
+      }
+    </a>
+    }
+  </nav>
+
+  <!-- Bottom -->
+  <div class="space-y-1 px-3 pb-3">
+
+    @for (item of bottomItems; track item.to) {
+    <a [routerLink]="item.to" [title]="collapsed ? item.label : null" routerLinkActive="bg-sidebar-accent text-sidebar-accent-foreground" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground">
+
+      @switch (item.label) {
+
+      @case ('Settings') {
+      <svg lucideSettings class="h-[18px] w-[18px] shrink-0"></svg>
+      }
+
+      @case ('Help & Support') {
+      <svg lucideCircleHelp class="h-[18px] w-[18px] shrink-0"></svg>
+      }
+      }
+
+      @if (!collapsed) {
+      <span class="truncate">
+        {{ item.label }}
+      </span>
+      }
+    </a>
+    }
+
+    <!-- User -->
+    <div class="mt-2 flex items-center gap-3 rounded-xl border border-sidebar-border bg-card/60 p-2.5" [class.justify-center]="collapsed" [class.border-0]="collapsed" [class.bg-transparent]="collapsed" [class.p-0]="collapsed">
+      <div class="grid h-9 w-9 shrink-0 place-items-center rounded-full gradient-primary text-xs font-bold text-primary-foreground">
+        {{ initials }}
+      </div>
+
+      @if (!collapsed) {
+      <div class="min-w-0">
+        <p class="truncate text-xs font-semibold">
+          {{ userName }}
+        </p>
+
+        <p class="truncate text-[11px] text-muted-foreground">
+          {{ plan }} plan
+        </p>
+      </div>
+      }
+    </div>
+  </div>
+</aside>
