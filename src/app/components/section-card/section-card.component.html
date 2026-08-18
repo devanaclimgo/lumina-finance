@@ -1,0 +1,27 @@
+<section class="surface animate-rise flex flex-col overflow-hidden" [class]="className">
+  @if (title || description) {
+  <header class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-5 pb-3 pt-5">
+    <div class="min-w-0">
+      @if (title) {
+      <h2 class="truncate text-base font-semibold">
+        {{ title }}
+      </h2>
+      }
+
+      @if (description) {
+      <p class="mt-0.5 truncate text-xs text-muted-foreground">
+        {{ description }}
+      </p>
+      }
+    </div>
+
+    <div class="flex shrink-0 items-center gap-2">
+      <ng-content select="[card-actions]" />
+    </div>
+  </header>
+  }
+
+  <div class="px-5 pb-5" [class]="bodyClassName">
+    <ng-content />
+  </div>
+</section>
