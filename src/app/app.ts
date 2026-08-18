@@ -1,14 +1,28 @@
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LumaMarkComponent } from "./components/luma-mark.component";
+
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { MobileNavComponent } from './components/mobile-nav/mobile-nav.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, LumaMarkComponent],
+
+  standalone: true,
+
+  imports: [
+    RouterOutlet,
+    SidebarComponent,
+    MobileNavComponent,
+  ],
+
   templateUrl: './app.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: '../styles.css',
 })
 export class App {
-  protected readonly title = signal('lumina-finance');
+  sidebarCollapsed = false;
+
+  workspace: 'personal' | 'business' = 'personal';
+
+  userName = 'Ana Gomes';
+
+  plan = 'Free';
 }
