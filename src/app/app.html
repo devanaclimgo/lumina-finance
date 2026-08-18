@@ -1,3 +1,43 @@
-<router-outlet />
-
 <app-luma-mark />
+
+<app-page-header
+  title="Dashboard"
+  subtitle="Overview of your finances"
+>
+  <div header-actions>
+    <button>
+      Add transaction
+    </button>
+  </div>
+</app-page-header>
+
+<app-section-card
+  title="Monthly overview"
+  description="Your income and expenses"
+>
+  <div card-actions>
+    <button>
+      View all
+    </button>
+  </div>
+
+  <app-overview-chart
+    [data]="overviewData"
+  />
+</app-section-card>
+
+<app-empty-state
+  title="No transactions yet"
+  description="Your transactions will appear here."
+>
+  <svg empty-icon></svg>
+
+  <button empty-action>
+    Add transaction
+  </button>
+</app-empty-state>
+
+<app-period-selector
+  [value]="period"
+  (valueChange)="onPeriodChange($event)"
+/>
