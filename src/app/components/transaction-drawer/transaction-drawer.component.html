@@ -1,0 +1,255 @@
+@if (open) {
+<div class="fixed inset-0 z-50 bg-black/50" (click)="close()"></div>
+
+<aside class="
+      fixed z-50 flex flex-col gap-0 overflow-y-auto
+      bg-card shadow-xl
+      bottom-0 left-0 right-0
+      h-[92vh] rounded-t-3xl
+      sm:bottom-auto sm:left-auto sm:right-0 sm:top-0
+      sm:h-full sm:w-full sm:max-w-md
+      sm:rounded-none
+    " (click)="$event.stopPropagation()">
+
+  <!-- Header -->
+  <header class="border-b border-border px-6 py-5">
+    <h2 class="text-lg font-semibold">
+      {{ editing ? 'Edit transaction' : 'Add transaction' }}
+    </h2>
+
+    <p class="mt-1 text-sm text-muted-foreground">
+      {{
+      editing
+      ? 'Update the details of this entry.'
+      : 'Record income or an expense in your workspace.'
+      }}
+    </p>
+  </header>
+
+  <!-- Content -->
+  <div class="flex-1 space-y-5 px-6 py-5">
+
+    <!-- Transaction type -->
+    <div class="
+          grid grid-cols-2 gap-2
+          rounded-xl bg-muted/60 p-1
+        ">
+      <button type="button" (click)="setType('expense')" class="
+            rounded-lg py-2 text-sm font-semibold
+            capitalize transition-all duration-300
+          " [class.bg-card]="form().type === 'expense'" [class.text-foreground]="form().type === 'expense'" [class.shadow-[var(--shadow-soft)]]="
+            form().type === 'expense'
+          " [class.text-muted-foreground]="form().type !== 'expense'">
+        Expense
+      </button>
+
+      <button type="button" (click)="setType('income')" class="
+            rounded-lg py-2 text-sm font-semibold
+            capitalize transition-all duration-300
+          " [class.bg-success]="form().type === 'income'" [class.text-success-foreground]="form().type === 'income'" [class.shadow-[var(--shadow-soft)]]="
+            form().type === 'income'
+          " [class.text-muted-foreground]="form().type !== 'income'">
+        Income
+      </button>
+    </div>
+
+    <!-- Description -->
+    <div class="space-y-2">
+      <label for="tx-desc" class="text-sm font-medium">
+        Description
+      </label>
+
+      <input id="tx-desc" type="text" [ngModel]="form().description" (ngModelChange)="updateField('description', $event)" placeholder="e.g. Whole Foods" class="
+            flex h-10 w-full rounded-md border
+            border-input bg-background px-3 py-2
+            text-sm
+            placeholder:text-muted-foreground
+            focus-visible:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-ring
+          " [class.border-destructive]="errors()['description']" />
+
+      @if (errors()['description']) {
+      <p class="text-xs text-destructive">
+        {{ errors()['description'] }}
+      </p>
+      }
+    </div>
+
+    <!-- Amount -->
+    <div class="space-y-2">
+      <label for="tx-amount" class="text-sm font-medium">
+        Amount
+      </label>
+
+      <div class="relative">
+        <span class="
+              absolute left-3 top-1/2
+              -translate-y-1/2
+              text-sm text-muted-foreground
+            ">
+          $
+        </span>
+
+        <input id="tx-amount" type="text" inputmode="decimal" [ngModel]="form().amount" (ngModelChange)="updateField('amount', $event)" placeholder="0.00" class="
+              flex h-10 w-full rounded-md border
+              border-input bg-background
+              px-3 py-2 pl-7
+              text-sm
+              placeholder:text-muted-foreground
+              focus-visible:outline-none
+              focus-visible:ring-2
+              focus-visible:ring-ring
+            " [class.border-destructive]="errors()['amount']" />
+      </div>
+
+      @if (errors()['amount']) {
+      <p class="text-xs text-destructive">
+        {{ errors()['amount'] }}
+      </p>
+      }
+    </div>
+
+    <!-- Category + Wallet -->
+    <div class="grid gap-4 sm:grid-cols-2">
+
+      <!-- Category -->
+      <div class="space-y-2">
+        <label for="tx-category" class="text-sm font-medium">
+          Category
+        </label>
+
+        <select id="tx-category" [ngModel]="form().category" (ngModelChange)="updateField('category', $event)" class="
+              flex h-10 w-full rounded-md border
+              border-input bg-background
+              px-3 py-2 text-sm
+              focus:outline-none
+              focus:ring-2 focus:ring-ring
+            ">
+          @for (category of categories; track category) {
+          <option [value]="category">
+            {{ category }}
+          </option>
+          }
+        </select>
+      </div>
+
+      <!-- Wallet -->
+      <div class="space-y-2">
+        <label for="tx-wallet" class="text-sm font-medium">
+          Wallet
+        </label>
+
+        <select id="tx-wallet" [ngModel]="form().walletId" (ngModelChange)="updateField('walletId', $event)" class="
+              flex h-10 w-full rounded-md border
+              border-input bg-background
+              px-3 py-2 text-sm
+              focus:outline-none
+              focus:ring-2 focus:ring-ring
+            ">
+          @for (wallet of walletOptions; track wallet.id) {
+          <option [value]="wallet.id">
+            {{ wallet.name }}
+          </option>
+          }
+        </select>
+      </div>
+
+    </div>
+
+    <!-- Date -->
+    <div class="space-y-2">
+      <label for="tx-date" class="text-sm font-medium">
+        Date
+      </label>
+
+      <input id="tx-date" type="date" [ngModel]="form().date" (ngModelChange)="updateField('date', $event)" class="
+            flex h-10 w-full rounded-md border
+            border-input bg-background
+            px-3 py-2 text-sm
+            focus:outline-none
+            focus:ring-2 focus:ring-ring
+          " />
+    </div>
+
+    <!-- Notes -->
+    <div class="space-y-2">
+      <label for="tx-notes" class="text-sm font-medium">
+        Notes
+      </label>
+
+      <textarea id="tx-notes" rows="3" [ngModel]="form().notes" (ngModelChange)="updateField('notes', $event)" placeholder="Optional details" class="
+            flex min-h-[80px] w-full rounded-md border
+            border-input bg-background
+            px-3 py-2 text-sm
+            placeholder:text-muted-foreground
+            focus:outline-none
+            focus:ring-2 focus:ring-ring
+          "></textarea>
+    </div>
+
+    <!-- Recurring -->
+    <div class="
+          flex items-center justify-between
+          rounded-xl border border-border p-3.5
+        ">
+      <div>
+        <p class="text-sm font-medium">
+          Recurring transaction
+        </p>
+
+        <p class="text-xs text-muted-foreground">
+          Repeats automatically each period
+        </p>
+      </div>
+
+      <button type="button" role="switch" [attr.aria-checked]="form().recurring" aria-label="Recurring" (click)="updateField('recurring', !form().recurring)" class="
+            relative inline-flex h-6 w-11
+            shrink-0 cursor-pointer
+            rounded-full border-2 border-transparent
+            transition-colors
+            focus:outline-none
+          " [class.bg-primary]="form().recurring" [class.bg-muted]="!form().recurring">
+        <span class="
+              pointer-events-none inline-block
+              h-5 w-5 transform rounded-full
+              bg-white shadow
+              transition-transform
+            " [class.translate-x-5]="form().recurring" [class.translate-x-0]="!form().recurring"></span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="
+        sticky bottom-0
+        flex gap-3
+        border-t border-border
+        bg-card/95
+        px-6 py-4
+        backdrop-blur
+      ">
+    <button type="button" class="
+          flex-1 rounded-md border
+          border-input bg-background
+          px-4 py-2
+          text-sm font-medium
+          hover:bg-accent
+        " (click)="close()">
+      Cancel
+    </button>
+
+    <button type="button" class="
+          flex-1 rounded-md
+          bg-primary px-4 py-2
+          text-sm font-medium
+          text-primary-foreground
+          hover:bg-primary/90
+        " (click)="submit()">
+      {{ editing ? 'Save changes' : 'Add transaction' }}
+    </button>
+  </footer>
+
+</aside>
+}
