@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-luma-mark',
+  selector: "app-luma-mark",
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -25,5 +25,5 @@ import { CommonModule } from '@angular/common';
   `,
 })
 export class LumaMarkComponent {
-  @Input() className = 'h-9 w-9';
+  @Input() className = "h-9 w-9";
 }

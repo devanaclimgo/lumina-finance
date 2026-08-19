@@ -4,7 +4,7 @@ import { registerables, ChartData, ChartOptions } from "chart.js";
 import { BaseChartDirective, provideCharts } from "ng2-charts";
 
 @Component({
-  selector: 'app-sparkline',
+  selector: "app-sparkline",
 
   standalone: true,
 
@@ -23,17 +23,17 @@ import { BaseChartDirective, provideCharts } from "ng2-charts";
 export class SparklineComponent implements OnChanges {
   @Input() data: number[] = [];
 
-  @Input() color = 'var(--chart-1)';
+  @Input() color = "var(--chart-1)";
 
   @Input() height = 44;
 
-  chartData: ChartData<'line'> = {
+  chartData: ChartData<"line"> = {
     labels: [],
 
     datasets: [],
   };
 
-  chartOptions: ChartOptions<'line'> = {
+  chartOptions: ChartOptions<"line"> = {
     responsive: true,
 
     maintainAspectRatio: false,
@@ -70,7 +70,7 @@ export class SparklineComponent implements OnChanges {
   };
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data'] || changes['color']) {
+    if (changes["data"] || changes["color"]) {
       this.buildChart();
     }
   }

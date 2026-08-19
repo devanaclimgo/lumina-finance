@@ -1,11 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: 'app-page-header',
+  selector: "app-page-header",
   standalone: true,
-  templateUrl: './page-header.component.html',
+  templateUrl: "./page-header.component.html",
 })
 export class PageHeaderComponent {
-  @Input() title = '';
+  @Input() title = "";
   @Input() subtitle?: string;
 }

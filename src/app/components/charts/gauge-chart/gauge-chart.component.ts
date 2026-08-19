@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy, OnChanges, Input, SimpleChanges } from '@angular/core';
-import { registerables, ChartData, ChartOptions } from 'chart.js';
-import { BaseChartDirective, provideCharts } from 'ng2-charts';
+import { CommonModule } from "@angular/common";
+import { Component, ChangeDetectionStrategy, OnChanges, Input, SimpleChanges } from "@angular/core";
+import { registerables, ChartData, ChartOptions } from "chart.js";
+import { BaseChartDirective, provideCharts } from "ng2-charts";
 
 @Component({
-  selector: 'app-gauge-chart',
+  selector: "app-gauge-chart",
 
   standalone: true,
 
@@ -39,14 +39,14 @@ export class GaugeChartComponent implements OnChanges {
 
   readonly Math = Math;
 
-  chartData: ChartData<'doughnut'> = {
-    labels: ['Score', 'Remaining'],
+  chartData: ChartData<"doughnut"> = {
+    labels: ["Score", "Remaining"],
 
     datasets: [
       {
         data: [0, 100],
 
-        backgroundColor: ['oklch(var(--chart-1))', 'oklch(var(--muted))'],
+        backgroundColor: ["oklch(var(--chart-1))", "oklch(var(--muted))"],
 
         borderWidth: 0,
 
@@ -59,12 +59,12 @@ export class GaugeChartComponent implements OnChanges {
     ],
   };
 
-  chartOptions: ChartOptions<'doughnut'> = {
+  chartOptions: ChartOptions<"doughnut"> = {
     responsive: true,
 
     maintainAspectRatio: false,
 
-    cutout: '72%',
+    cutout: "72%",
 
     plugins: {
       legend: {
@@ -78,7 +78,7 @@ export class GaugeChartComponent implements OnChanges {
   };
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['value']) {
+    if (changes["value"]) {
       const normalizedValue = Math.max(
         0,
 

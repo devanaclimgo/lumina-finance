@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { PERIODS, PeriodKey } from '../../lib/selectors';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { PERIODS, PeriodKey } from "../../lib/selectors";
 
 @Component({
-  selector: 'app-period-selector',
+  selector: "app-period-selector",
   standalone: true,
-  templateUrl: './period-selector.component.html',
+  templateUrl: "./period-selector.component.html",
 })
 export class PeriodSelectorComponent {
   @Input() value!: PeriodKey;

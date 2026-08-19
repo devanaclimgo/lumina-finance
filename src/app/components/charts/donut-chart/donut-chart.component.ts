@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from "@angular/core";
 
-import { CommonModule } from '@angular/common';
-import { registerables, ChartData, ChartOptions } from 'chart.js';
-import { BaseChartDirective, provideCharts } from 'ng2-charts';
-import { formatCurrency } from '../../../lib/format';
+import { CommonModule } from "@angular/common";
+import { registerables, ChartData, ChartOptions } from "chart.js";
+import { BaseChartDirective, provideCharts } from "ng2-charts";
+import { formatCurrency } from "../../../lib/format";
 
 @Component({
-  selector: 'app-donut-chart',
+  selector: "app-donut-chart",
 
   standalone: true,
 
@@ -41,18 +41,18 @@ export class DonutChartComponent implements OnChanges {
 
   @Input() total?: number;
 
-  chartData: ChartData<'doughnut'> = {
+  chartData: ChartData<"doughnut"> = {
     labels: [],
 
     datasets: [],
   };
 
-  chartOptions: ChartOptions<'doughnut'> = {
+  chartOptions: ChartOptions<"doughnut"> = {
     responsive: true,
 
     maintainAspectRatio: false,
 
-    cutout: '62%',
+    cutout: "62%",
 
     plugins: {
       legend: {
@@ -64,7 +64,7 @@ export class DonutChartComponent implements OnChanges {
           label: (context) => {
             const value = Number(context.raw ?? 0);
 
-            return ` ${context.label}: ${formatCurrency(value, 'USD', {
+            return ` ${context.label}: ${formatCurrency(value, "USD", {
               compact: true,
             })}`;
           },
@@ -76,13 +76,13 @@ export class DonutChartComponent implements OnChanges {
   get formattedTotal(): string {
     const sum = this.total ?? this.data.reduce((acc, item) => acc + item.value, 0);
 
-    return formatCurrency(sum, 'USD', {
+    return formatCurrency(sum, "USD", {
       compact: true,
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data']) {
+    if (changes["data"]) {
       this.buildChart();
     }
   }

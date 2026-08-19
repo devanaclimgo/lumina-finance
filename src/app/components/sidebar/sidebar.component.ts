@@ -1,12 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from "@angular/router";
 
 import {
   LucideArrowLeftRight,
@@ -20,9 +14,9 @@ import {
   LucidePiggyBank,
   LucideSettings,
   LucideWallet,
-} from '@lucide/angular';
+} from "@lucide/angular";
 
-import { LumaMarkComponent } from '../luma-mark.component';
+import { LumaMarkComponent } from "../luma-mark.component";
 
 export interface NavItem {
   to: string;
@@ -33,43 +27,43 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   {
-    to: '/',
-    label: 'Dashboard',
+    to: "/",
+    label: "Dashboard",
     icon: LucideLayoutDashboard,
   },
   {
-    to: '/transactions',
-    label: 'Transactions',
+    to: "/transactions",
+    label: "Transactions",
     icon: LucideArrowLeftRight,
   },
   {
-    to: '/wallets',
-    label: 'Wallets',
+    to: "/wallets",
+    label: "Wallets",
     icon: LucideWallet,
   },
   {
-    to: '/budget',
-    label: 'Budget',
+    to: "/budget",
+    label: "Budget",
     icon: LucidePiggyBank,
   },
   {
-    to: '/investments',
-    label: 'Investments',
+    to: "/investments",
+    label: "Investments",
     icon: LucideLineChart,
   },
   {
-    to: '/analytics',
-    label: 'Analytics',
+    to: "/analytics",
+    label: "Analytics",
     icon: LucideBarChart3,
   },
   {
-    to: '/reports',
-    label: 'Reports',
+    to: "/reports",
+    label: "Reports",
     icon: LucideFileText,
   },
   {
-    to: '/business',
-    label: 'Business',
+    to: "/business",
+    label: "Business",
     icon: LucideBriefcase,
     businessOnly: true,
   },
@@ -77,19 +71,19 @@ export const NAV_ITEMS: NavItem[] = [
 
 export const BOTTOM_ITEMS: NavItem[] = [
   {
-    to: '/settings',
-    label: 'Settings',
+    to: "/settings",
+    label: "Settings",
     icon: LucideSettings,
   },
   {
-    to: '/help',
-    label: 'Help & Support',
+    to: "/help",
+    label: "Help & Support",
     icon: LucideCircleHelp,
   },
 ];
 
 @Component({
-  selector: 'app-sidebar',
+  selector: "app-sidebar",
   standalone: true,
 
   imports: [
@@ -108,18 +102,18 @@ export const BOTTOM_ITEMS: NavItem[] = [
     LucideWallet,
   ],
 
-  templateUrl: './sidebar.component.html',
+  templateUrl: "./sidebar.component.html",
 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
   @Input() collapsed = false;
 
-  @Input() workspace: 'personal' | 'business' = 'personal';
+  @Input() workspace: "personal" | "business" = "personal";
 
-  @Input() userName = 'Jane Doe';
+  @Input() userName = "Jane Doe";
 
-  @Input() plan = 'Free';
+  @Input() plan = "Free";
 
   @Output() toggle = new EventEmitter<void>();
 
@@ -128,18 +122,14 @@ export class SidebarComponent {
   readonly bottomItems = BOTTOM_ITEMS;
 
   get filteredNavItems(): NavItem[] {
-    return this.navItems.filter(
-      (item) =>
-        !item.businessOnly ||
-        this.workspace === 'business'
-    );
+    return this.navItems.filter((item) => !item.businessOnly || this.workspace === "business");
   }
 
   get initials(): string {
     return this.userName
-      .split(' ')
+      .split(" ")
       .map((name) => name[0])
-      .join('')
+      .join("")
       .slice(0, 2)
       .toUpperCase();
   }

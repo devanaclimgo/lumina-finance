@@ -1,38 +1,38 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from "@angular/core";
 
-import { CommonModule, formatCurrency } from '@angular/common';
+import { CommonModule, formatCurrency } from "@angular/common";
 
-import { BaseChartDirective, provideCharts } from 'ng2-charts';
+import { BaseChartDirective, provideCharts } from "ng2-charts";
 
-import { ChartData, ChartOptions, registerables } from 'chart.js';
+import { ChartData, ChartOptions, registerables } from "chart.js";
 
-import { Chart as ChartJS } from 'chart.js';
+import { Chart as ChartJS } from "chart.js";
 
-import { formatCompact } from '../../../lib/format';
+import { formatCompact } from "../../../lib/format";
 
 ChartJS.register(...registerables);
 
-const axisColor = 'var(--muted-foreground)';
+const axisColor = "var(--muted-foreground)";
 
-const borderColor = 'var(--border)';
+const borderColor = "var(--border)";
 
 const defaultColors: Record<string, string> = {
-  income: 'oklch(var(--chart-3))',
-  expenses: 'oklch(var(--chart-4))',
-  balance: 'oklch(var(--chart-1))',
-  revenue: 'oklch(var(--chart-1))',
-  profit: 'oklch(var(--chart-3))',
+  income: "oklch(var(--chart-3))",
+  expenses: "oklch(var(--chart-4))",
+  balance: "oklch(var(--chart-1))",
+  revenue: "oklch(var(--chart-1))",
+  profit: "oklch(var(--chart-3))",
 };
 
 @Component({
-  selector: 'app-chart-tooltip',
+  selector: "app-chart-tooltip",
   standalone: true,
-  template: '',
+  template: "",
 })
 export class ChartTooltipComponent {}
 
 @Component({
-  selector: 'app-overview-chart',
+  selector: "app-overview-chart",
   standalone: true,
   imports: [CommonModule, BaseChartDirective],
   providers: [provideCharts({ registerables })],
@@ -46,20 +46,20 @@ export class ChartTooltipComponent {}
 })
 export class OverviewChartComponent implements OnChanges {
   @Input() data: Array<Record<string, any>> = [];
-  @Input() keys: string[] = ['income', 'expenses', 'balance'];
+  @Input() keys: string[] = ["income", "expenses", "balance"];
   @Input() height = 300;
 
-  chartData: ChartData<'line'> = {
+  chartData: ChartData<"line"> = {
     labels: [],
     datasets: [],
   };
 
-  chartOptions: ChartOptions<'line'> = {
+  chartOptions: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
 
     interaction: {
-      mode: 'index',
+      mode: "index",
       intersect: false,
     },
 
@@ -72,8 +72,8 @@ export class OverviewChartComponent implements OnChanges {
         callbacks: {
           label: (context) => {
             const value = Number(context.raw ?? 0);
-            const locale = navigator.language || 'en-US';
-            return `${context.dataset.label}: ${formatCurrency(value, locale, 'USD')}`;
+            const locale = navigator.language || "en-US";
+            return `${context.dataset.label}: ${formatCurrency(value, locale, "USD")}`;
           },
         },
       },
@@ -114,19 +114,19 @@ export class OverviewChartComponent implements OnChanges {
   };
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data'] || changes['keys']) {
+    if (changes["data"] || changes["keys"]) {
       this.buildChart();
     }
   }
 
   private buildChart(): void {
-    const labels = this.data.map((row) => row['label']);
+    const labels = this.data.map((row) => row["label"]);
 
     this.chartData = {
       labels,
 
       datasets: this.keys.map((key) => {
-        const color = defaultColors[key] ?? 'var(--chart-1)';
+        const color = defaultColors[key] ?? "var(--chart-1)";
 
         return {
           label: key,

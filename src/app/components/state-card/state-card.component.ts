@@ -1,24 +1,16 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 
-import {
-  LucideArrowDownRight,
-  LucideArrowUpRight,
-  type LucideIcon,
-} from '@lucide/angular';
+import { LucideArrowDownRight, LucideArrowUpRight, type LucideIcon } from "@lucide/angular";
 
-import { AnimatedNumberComponent } from '../animated-number/animated-number.component';
-import { formatCurrency, formatPercent } from '../../lib/format';
-import { cn } from '../../lib/utils';
+import { AnimatedNumberComponent } from "../animated-number/animated-number.component";
+import { formatCurrency, formatPercent } from "../../lib/format";
+import { cn } from "../../lib/utils";
 
 @Component({
-  selector: 'app-stat-card',
+  selector: "app-stat-card",
   standalone: true,
-  imports: [
-    LucideArrowDownRight,
-    LucideArrowUpRight,
-    AnimatedNumberComponent,
-  ],
-  templateUrl: './state-card.component.html',
+  imports: [LucideArrowDownRight, LucideArrowUpRight, AnimatedNumberComponent],
+  templateUrl: "./state-card.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatCardComponent {
@@ -32,7 +24,7 @@ export class StatCardComponent {
 
   @Input() icon?: LucideIcon;
 
-  @Input() currency = 'USD';
+  @Input() currency = "USD";
 
   @Input() featured = false;
 
@@ -57,11 +49,6 @@ export class StatCardComponent {
   }
 
   get iconClass(): string {
-    return cn(
-      'h-4 w-4',
-      this.featured
-        ? 'text-primary-foreground/80'
-        : 'text-muted-foreground',
-    );
+    return cn("h-4 w-4", this.featured ? "text-primary-foreground/80" : "text-muted-foreground");
   }
 }

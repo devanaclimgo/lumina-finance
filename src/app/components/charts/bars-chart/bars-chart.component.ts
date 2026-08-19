@@ -1,8 +1,8 @@
-import { CommonModule, formatCurrency } from '@angular/common';
-import { Component, ChangeDetectionStrategy, OnChanges, Input, SimpleChanges } from '@angular/core';
-import { registerables, ChartData, ChartOptions } from 'chart.js';
-import { BaseChartDirective, provideCharts } from 'ng2-charts';
-import { formatCompact } from '../../../lib/format';
+import { CommonModule, formatCurrency } from "@angular/common";
+import { Component, ChangeDetectionStrategy, OnChanges, Input, SimpleChanges } from "@angular/core";
+import { registerables, ChartData, ChartOptions } from "chart.js";
+import { BaseChartDirective, provideCharts } from "ng2-charts";
+import { formatCompact } from "../../../lib/format";
 
 export interface BarChartKey {
   key: string;
@@ -10,12 +10,12 @@ export interface BarChartKey {
   label: string;
 }
 
-const axisColor = 'var(--muted-foreground)';
+const axisColor = "var(--muted-foreground)";
 
-const borderColor = 'var(--border)';
+const borderColor = "var(--border)";
 
 @Component({
-  selector: 'app-bars-chart',
+  selector: "app-bars-chart",
 
   standalone: true,
 
@@ -40,13 +40,13 @@ export class BarsChartComponent implements OnChanges {
 
   @Input() stacked = false;
 
-  chartData: ChartData<'bar'> = {
+  chartData: ChartData<"bar"> = {
     labels: [],
 
     datasets: [],
   };
 
-  chartOptions: ChartOptions<'bar'> = {
+  chartOptions: ChartOptions<"bar"> = {
     responsive: true,
 
     maintainAspectRatio: false,
@@ -60,9 +60,9 @@ export class BarsChartComponent implements OnChanges {
         callbacks: {
           label: (context) => {
             const value = Number(context.raw ?? 0);
-            const locale = navigator.language || 'en-US';
+            const locale = navigator.language || "en-US";
 
-            return ` ${context.dataset.label}: ${formatCurrency(value, locale, 'USD')}`;
+            return ` ${context.dataset.label}: ${formatCurrency(value, locale, "USD")}`;
           },
         },
       },
@@ -114,14 +114,14 @@ export class BarsChartComponent implements OnChanges {
   };
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data'] || changes['keys'] || changes['stacked']) {
+    if (changes["data"] || changes["keys"] || changes["stacked"]) {
       this.buildChart();
     }
   }
 
   private buildChart(): void {
     this.chartData = {
-      labels: this.data.map((row) => row['label']),
+      labels: this.data.map((row) => row["label"]),
 
       datasets: this.keys.map((item) => ({
         label: item.label,
@@ -134,7 +134,7 @@ export class BarsChartComponent implements OnChanges {
 
         maxBarThickness: 38,
 
-        stack: this.stacked ? 'a' : undefined,
+        stack: this.stacked ? "a" : undefined,
       })),
     };
 
@@ -143,13 +143,13 @@ export class BarsChartComponent implements OnChanges {
 
       scales: {
         x: {
-          ...(this.chartOptions.scales?.['x'] as any),
+          ...(this.chartOptions.scales?.["x"] as any),
 
           stacked: this.stacked,
         },
 
         y: {
-          ...(this.chartOptions.scales?.['y'] as any),
+          ...(this.chartOptions.scales?.["y"] as any),
 
           stacked: this.stacked,
         },
