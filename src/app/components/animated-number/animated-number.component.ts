@@ -6,10 +6,10 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
-} from '@angular/core';
+} from "@angular/core";
 
 @Component({
-  selector: 'app-animated-number',
+  selector: "app-animated-number",
   standalone: true,
   template: `<span [class]="className">{{ format(display) }}</span>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,45 +18,52 @@ export class AnimatedNumberComponent implements OnChanges, OnDestroy {
   @Input() value = 0;
   @Input() format: (value: number) => string = (value) => value.toFixed(2);
   @Input() duration = 750;
-  @Input() className?: string;
+  @Input() className = "";
 
-  display = this.value;
+  display = 0;
 
-  private from = this.value;
-  private rafId?: number;
+  private from = 0;
+  private rafId: number | null = null;
 
   constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (!changes['value'] && !changes['duration']) {
+    if (!changes["value"] && !changes["duration"]) {
       return;
     }
 
     const startValue = this.from;
-    const delta = this.value - startValue;
+    const endValue = this.value;
 
-    if (delta === 0) {
-      this.display = this.value;
+    if (startValue === endValue) {
+      this.display = endValue;
+      this.cdr.markForCheck();
       return;
     }
 
     this.cancelAnimation();
 
-    const start = performance.now();
+    const startTime = performance.now();
 
-    const tick = (now: number) => {
-      const progress = Math.min(1, (now - start) / this.duration);
+    const tick = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / this.duration, 1);
+
+      // easeOutCubic
       const eased = 1 - Math.pow(1 - progress, 3);
 
-      this.display = startValue + delta * eased;
+      this.display = startValue + (endValue - startValue) * eased;
+
       this.cdr.markForCheck();
 
       if (progress < 1) {
         this.rafId = requestAnimationFrame(tick);
       } else {
-        this.from = this.value;
-        this.display = this.value;
-        this.rafId = undefined;
+        this.display = endValue;
+        this.from = endValue;
+        this.rafId = null;
+
+        this.cdr.markForCheck();
       }
     };
 
@@ -68,9 +75,9 @@ export class AnimatedNumberComponent implements OnChanges, OnDestroy {
   }
 
   private cancelAnimation(): void {
-    if (this.rafId !== undefined) {
+    if (this.rafId !== null) {
       cancelAnimationFrame(this.rafId);
-      this.rafId = undefined;
+      this.rafId = null;
     }
   }
 }
