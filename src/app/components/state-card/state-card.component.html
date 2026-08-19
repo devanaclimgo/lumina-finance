@@ -1,0 +1,35 @@
+<div class="animate-rise relative overflow-hidden rounded-2xl p-5 surface-hover" [class.gradient-primary]="featured" [class.border]="featured" [class.border-transparent]="featured" [class.text-primary-foreground]="featured" [class.shadow-[var(--shadow-glow)]]="featured" [class.surface]="!featured" [style.animation-delay.ms]="delay">
+  @if (featured) {
+  <div class="pointer-events-none absolute -right-16 -top-20 h-52 w-52 rounded-full bg-white/15 blur-2xl"></div>
+  }
+
+  <div class="relative flex items-start justify-between gap-3">
+    <p class="text-sm font-medium" [class.text-primary-foreground/80]="featured" [class.text-muted-foreground]="!featured">
+      {{ label }}
+    </p>
+
+    @if (change !== undefined) {
+    <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold num" [class.bg-white/15]="featured" [class.text-primary-foreground]="featured" [class.bg-success/12]="!featured && good" [class.text-success]="!featured && good" [class.bg-destructive/12]="!featured && !good" [class.text-destructive]="!featured && !good">
+      @if (positive) {
+      <svg lucideArrowUpRight class="h-3 w-3"></svg>
+      } @else {
+      <svg lucideArrowDownRight class="h-3 w-3"></svg>
+      }
+
+      {{ formatChange(change) }}
+    </span>
+    } @else if (icon) {
+    <svg lucideWallet></svg>
+    }
+  </div>
+
+  <p class="relative mt-3 text-3xl font-bold num" [class.text-primary-foreground]="featured">
+    <app-animated-number [value]="value" [format]="formatValue" />
+  </p>
+
+  @if (hint) {
+  <p class="relative mt-1.5 text-xs" [class.text-primary-foreground/75]="featured" [class.text-muted-foreground]="!featured">
+    {{ hint }}
+  </p>
+  }
+</div>
