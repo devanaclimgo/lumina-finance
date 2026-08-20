@@ -16,7 +16,7 @@ import {
   LucideWallet,
 } from "@lucide/angular";
 
-import { LumaMarkComponent } from "../luma-mark.component";
+import { LumaMarkComponent } from "../luma-mark/luma-mark.component";
 
 export interface NavItem {
   to: string;
