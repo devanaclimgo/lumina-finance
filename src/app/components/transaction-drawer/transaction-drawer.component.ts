@@ -161,12 +161,10 @@ export class TransactionDrawerComponent implements OnChanges {
     if (this.editing) {
       this.store.updateTransaction(this.editing.id, payload);
 
-      // Troque pelo seu ToastService
       console.log("Transaction updated", payload.description);
     } else {
       this.store.addTransaction(payload);
 
-      // Troque pelo seu ToastService
       console.log(
         "Transaction added",
         `${payload.type === "income" ? "+" : "-"}$${payload.amount.toFixed(2)} · ${payload.category}`,
