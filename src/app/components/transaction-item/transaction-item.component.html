@@ -1,0 +1,26 @@
+<button type="button" (click)="onClick.emit()" class="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors duration-200 hover:bg-accent/60">
+  <span [class]="iconWrapperClasses">
+    <ng-container *ngIf="isIncome; else expenseIcon">
+      <svg lucideArrowDownLeft="h-4 w-4"></svg>
+    </ng-container>
+    <ng-template #expenseIcon>
+      <svg LucideArrowUpRight class="h-4 w-4"></svg>
+    </ng-template>
+  </span>
+
+  <span class="min-w-0 flex-1">
+    <span class="block truncate text-sm font-medium">{{ tx.description }}</span>
+    <span class="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+      <app-category-dot [category]="tx.category"></app-category-dot>
+      <span class="truncate">{{ tx.category }}</span>
+      <span aria-hidden="true">·</span>
+      <span class="shrink-0">{{ formattedDate }}</span>
+
+      <ng-container *ngIf="walletName">
+        <span class="hidden truncate sm:inline">· {{ walletName }}</span>
+      </ng-container>
+    </span>
+  </span>
+
+  <span [class]="amountClasses"> {{ isIncome ? "+" : "-" }}{{ formattedAmount }} </span>
+</button>
