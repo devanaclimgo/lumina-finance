@@ -3,8 +3,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./src",
-    "types": []
+    "baseUrl": "./src",
+    "types": [],
+    "ignoreDeprecations": "6.0",
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts"],
