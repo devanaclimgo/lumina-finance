@@ -14,11 +14,7 @@ import {
 import { WorkspaceSwitcher } from "../workspace-switcher/workspace-switcher.component";
 import { LumaMarkComponent } from "../luma-mark/luma-mark.component";
 import { NAV_ITEMS } from "../sidebar/sidebar.component";
-import { FinanceStoreService } from "../../services/store.service";
-
-type ThemeMode = "light" | "dark" | "system";
-
-type NotificationTone = "warning" | "success";
+import { FinanceStoreService, NotificationTone, ThemeMode } from "../../services/store.service";
 
 interface Notification {
   title: string;
