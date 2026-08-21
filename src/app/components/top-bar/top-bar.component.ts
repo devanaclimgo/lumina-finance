@@ -49,8 +49,6 @@ interface ThemeOption {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopBarComponent {
-  private readonly store = inject(FinanceStoreService);
-
   readonly mobileMenuOpen = signal(false);
   readonly notificationsOpen = signal(false);
   readonly themeMenuOpen = signal(false);
