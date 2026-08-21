@@ -1,0 +1,130 @@
+<header class="glass sticky top-0 z-30 flex h-16 items-center gap-2 border-b px-3 sm:px-5">
+  <button type="button" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" aria-label="Open menu" [attr.aria-expanded]="mobileMenuOpen()" (click)="toggleMobileMenu()">
+    @if (mobileMenuOpen()) {
+    <svg lucideX class="h-5 w-5"></svg>
+    } @else {
+    <svg lucideMenu class="h-5 w-5"></svg>
+    }
+  </button>
+
+  @if (mobileMenuOpen()) {
+  <div class="fixed inset-0 z-50 lg:hidden" (click)="closeMobileMenu()">
+    <div class="absolute inset-0 bg-foreground/20 backdrop-blur-sm"></div>
+
+    <aside class="absolute left-0 top-0 flex h-full w-[260px] flex-col bg-sidebar shadow-lift animate-rise" (click)="$event.stopPropagation()">
+      <div class="flex h-16 items-center justify-between gap-3 px-4">
+        <a routerLink="/" class="flex items-center gap-3" (click)="closeMobileMenu()">
+          <app-luma-mark></app-luma-mark>
+
+          <p class="text-[15px] font-bold text-sidebar-foreground">
+            Luma
+          </p>
+        </a>
+
+        <button type="button" class="grid h-8 w-8 place-items-center rounded-full text-sidebar-foreground transition-colors hover:bg-sidebar-accent" aria-label="Close menu" (click)="closeMobileMenu()">
+          <svg lucideX class="h-5 w-5"></svg>
+        </button>
+      </div>
+
+      <nav class="space-y-1 px-3">
+        @for (item of visibleNavItems(); track item.to) {
+        <a [routerLink]="item.to" routerLinkActive="bg-sidebar-accent !text-sidebar-accent-foreground" [routerLinkActiveOptions]="{ exact: true }" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" (click)="closeMobileMenu()">
+          <svg lucideX class="h-5 w-5"></svg>
+
+          <span>{{ item.label }}</span>
+        </a>
+        }
+
+        <a routerLink="/settings" routerLinkActive="bg-sidebar-accent !text-sidebar-accent-foreground" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" (click)="closeMobileMenu()">
+          Settings
+        </a>
+
+        <a routerLink="/help" routerLinkActive="bg-sidebar-accent !text-sidebar-accent-foreground" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" (click)="closeMobileMenu()">
+          Help & Support
+        </a>
+      </nav>
+    </aside>
+  </div>
+  }
+
+  <div class="hidden min-w-0 flex-1 items-center md:flex">
+    <label class="relative w-full max-w-md">
+      <svg lucideSearch class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"></svg>
+
+      <input type="search" placeholder="Search transactions, wallets, reports…" aria-label="Global search" class="h-10 w-full rounded-full border border-border bg-muted/50 pl-10 pr-4 text-sm outline-none transition-all duration-300 placeholder:text-muted-foreground focus:border-primary/50 focus:bg-card focus:ring-4 focus:ring-primary/10" />
+    </label>
+  </div>
+
+  <div class="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
+
+    <app-workspace-switcher></app-workspace-switcher>
+
+    <span class="hidden items-center rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground xl:inline-flex">
+      {{ today }}
+    </span>
+
+    <div class="relative">
+      <button type="button" class="relative grid h-9 w-9 place-items-center rounded-full text-foreground transition-colors hover:bg-muted" aria-label="Notifications" [attr.aria-expanded]="notificationsOpen()" (click)="toggleNotifications()">
+        <svg lucideBell class="h-[18px] w-[18px]"></svg>
+
+        <span class="absolute right-2 top-2 h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+      </button>
+
+      @if (notificationsOpen()) {
+      <div class="absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-2xl border border-border bg-popover text-popover-foreground shadow-lift animate-rise">
+        <div class="px-4 py-3">
+          <p class="text-sm font-semibold">
+            Notifications
+          </p>
+        </div>
+
+        <div class="h-px bg-border"></div>
+
+        @for (notification of notifications; track notification.title) {
+        <button type="button" class="flex w-full flex-col items-start gap-0.5 px-4 py-2.5 text-left transition-colors hover:bg-muted" (click)="notificationsOpen.set(false)">
+          <span class="text-sm font-medium">
+            {{ notification.title }}
+          </span>
+
+          <span class="text-xs" [class.text-success]="notification.tone === 'success'" [class.text-warning]="notification.tone === 'warning'">
+            {{ notification.meta }}
+          </span>
+        </button>
+        }
+      </div>
+      }
+    </div>
+
+    <div class="relative">
+      <button type="button" class="relative grid h-9 w-9 place-items-center rounded-full text-foreground transition-colors hover:bg-muted" aria-label="Toggle theme" [attr.aria-expanded]="themeMenuOpen()" (click)="toggleThemeMenu()">
+        @if (theme() === 'dark') {
+        <svg lucideMoon class="h-[18px] w-[18px]"></svg>
+        } @else {
+        <svg lucideSun class="h-[18px] w-[18px]"></svg>
+        }
+      </button>
+
+      @if (themeMenuOpen()) {
+      <div class="absolute right-0 top-11 z-50 min-w-[150px] overflow-hidden rounded-2xl border border-border bg-popover p-1.5 text-popover-foreground shadow-lift animate-rise">
+        @for (themeOption of themes; track themeOption.key) {
+        <button type="button" class="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm transition-colors hover:bg-muted" (click)="setTheme(themeOption.key)">
+          <svg src="themeOption.icon" class="h-4 w-4"></svg>
+
+          <span>{{ themeOption.label }}</span>
+
+          @if (theme() === themeOption.key) {
+          <svg lucideCheck class="ml-auto h-3.5 w-3.5 text-primary"></svg>
+          }
+        </button>
+        }
+      </div>
+      }
+    </div>
+
+    <a routerLink="/settings" aria-label="Account settings" class="block">
+      <div class="grid h-9 w-9 place-items-center rounded-full gradient-primary text-xs font-bold text-primary-foreground transition-transform duration-300 hover:scale-105">
+        {{ initials() }}
+      </div>
+    </a>
+  </div>
+</header>
