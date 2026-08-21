@@ -18,11 +18,16 @@
     "@angular/platform-browser": "^22.1.2",
     "@angular/router": "^22.1.2",
     "@lucide/angular": "^1.32.0",
+    "@ng-icons/core": "^35.0.1",
+    "@ng-icons/lucide": "^35.0.1",
+    "@radix-ng/primitives": "^1.1.2",
     "chart.js": "^4.5.1",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "ng2-charts": "^10.0.0",
     "rxjs": "~7.8.0",
     "tailwind-merge": "^3.6.0",
+    "tailwindcss-animate": "^1.0.7",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
