@@ -24,6 +24,9 @@ import {
 const KEY = "luma.state.v1";
 
 export type ThemeMode = "light" | "dark" | "system";
+export type ThemeProfile = "personal" | "business";
+
+export type NotificationTone = "warning" | "success";
 
 export interface Settings {
   name: string;
