@@ -6,4 +6,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import("./components/analytics/analytics.component").then((m) => m.AnalyticsPageComponent),
   },
+  {
+    path: "budget",
+    title: "Budgets & Goals — Luma",
+    loadComponent: () =>
+      import("./components/budget/budget.component").then((m) => m.BudgetPageComponent),
+  },
 ];
