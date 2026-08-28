@@ -1,0 +1,216 @@
+<div class="space-y-5">
+  <app-page-header title="Budgets & goals" subtitle="Monthly limits per category and long-term savings targets.">
+    <div actions class="flex items-center gap-2">
+      <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-secondary px-3 py-2 text-sm font-medium hover:bg-secondary/80" ubDialogTrigger [handle]="goalModalHandle" (click)="prepareNewGoal()">
+        <svg LucideTarget class="h-4 w-4"></svg>
+        New goal
+      </button>
+
+      <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" ubDialogTrigger [handle]="budgetModalHandle" (click)="prepareNewBudget()">
+        <svg LucidePlus class="h-4 w-4"></svg>
+        New budget
+      </button>
+    </div>
+  </app-page-header>
+
+  <div class="grid gap-4 sm:grid-cols-3">
+    @for (s of summaryCards(); track s.label; let i = $index) {
+    <div class="surface surface-hover animate-rise rounded-2xl p-5" [style.animation-delay]="i * 60 + 'ms'">
+      <p class="text-sm text-muted-foreground">{{ s.label }}</p>
+      <p class="mt-1 text-2xl font-bold num">
+        <app-animated-number [value]="s.value" formatter="formatCurrency"></app-animated-number>
+      </p>
+
+      @if (s.label === 'Remaining') {
+      <div class="relative mt-3 h-2 w-full overflow-hidden rounded-full bg-secondary">
+        <div class="h-full bg-primary transition-all duration-300" [style.width.%]="totalSpentPercentage()"></div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <app-section-card title="Budget vs actual" description="This month, by category">
+    <app-bars-chart [data]="chartData()" [keys]="chartKeys"></app-bars-chart>
+  </app-section-card>
+
+  <div class="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+    <app-section-card title="Category budgets" [description]="rows().length + ' active'">
+      @if (rows().length === 0) {
+      <app-empty-state title="No budgets yet" description="Create a budget to keep category spending under control.">
+        <svg LucidePiggyBank class="h-5 w-5"></svg>
+      </app-empty-state>
+      } @else {
+      <div class="grid gap-3 sm:grid-cols-2">
+        @for (r of rows(); track r.id; let i = $index) {
+        <div [style.animation-delay]="i * 40 + 'ms'" class="animate-rise group rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] transition-all duration-300 hover:-translate-y-0.5">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex min-w-0 items-center gap-2">
+              <span class="h-2.5 w-2.5 shrink-0 rounded-full" [style.background]="categoryColors[r.category] ?? 'var(--chart-1)'"></span>
+              <p class="truncate text-sm font-semibold">{{ r.category }}</p>
+            </div>
+            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border-transparent" [ngClass]="statusTone[r.status]">
+              {{ r.status }}
+            </span>
+          </div>
+
+          <p class="mt-3 text-lg font-bold num">
+            {{ formatCurrency(r.spent) }}
+            <span class="text-sm font-medium text-muted-foreground">
+              / {{ formatCurrency(r.limit) }}
+            </span>
+          </p>
+
+          <div class="relative mt-2 h-2 w-full overflow-hidden rounded-full bg-secondary">
+            <div class="h-full bg-primary transition-all duration-300" [style.width.%]="r.pct > 100 ? 100 : r.pct"></div>
+          </div>
+
+          <div class="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+            <span>{{ r.pct | number:'1.0-0' }}% used</span>
+            <span class="flex items-center gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              <button type="button" class="font-medium text-primary hover:underline" ubDialogTrigger [handle]="budgetModalHandle" (click)="prepareEditBudget(r)">
+                Edit
+              </button>
+              <button type="button" [attr.aria-label]="'Delete ' + r.category + ' budget'" class="ml-1 text-muted-foreground hover:text-destructive" (click)="deleteBudget(r.id)">
+                <svg LucideTrash2 class="h-3.5 w-3.5"></svg>
+              </button>
+            </span>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </app-section-card>
+
+    <app-section-card title="Savings goals" description="Progress toward what matters">
+      <div class="space-y-3">
+        @for (g of store.goals(); track g.id; let i = $index) {
+        @let pct = g.target ? (g.saved / g.target) * 100 : 0;
+        @let cappedPct = pct > 100 ? 100 : pct;
+
+        <div [style.animation-delay]="i * 40 + 'ms'" class="animate-rise rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)]">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex min-w-0 items-center gap-2">
+              <span class="text-lg" aria-hidden="true">{{ g.emoji }}</span>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-semibold">{{ g.name }}</p>
+                <p class="text-xs text-muted-foreground">
+                  Due {{ formatDate(g.deadline, 'long') }}
+                </p>
+              </div>
+            </div>
+
+            <button type="button" [attr.aria-label]="'Delete ' + g.name" class="text-muted-foreground transition-colors hover:text-destructive" (click)="deleteGoal(g.id)">
+              <svg LucideTrash2 class="h-3.5 w-3.5"></svg>
+            </button>
+          </div>
+
+          <p class="mt-3 text-sm font-semibold num">
+            {{ formatCurrency(g.saved) }}
+            <span class="font-medium text-muted-foreground"> of {{ formatCurrency(g.target) }}</span>
+          </p>
+
+          <div class="relative mt-2 h-2 w-full overflow-hidden rounded-full bg-secondary">
+            <div class="h-full bg-primary transition-all duration-300" [style.width.%]="cappedPct"></div>
+          </div>
+
+          <div class="mt-3 flex gap-2">
+            @for (amt of [50, 100, 250]; track amt) {
+            <button type="button" class="h-7 rounded-full bg-secondary px-2.5 text-xs font-medium hover:bg-secondary/80" (click)="addQuickSavings(g, amt)">
+              +{{ formatCurrency(amt).replace('.00', '') }}
+            </button>
+            }
+
+            <span class="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
+              <svg LucideTrendingUp class="h-3.5 w-3.5"></svg>
+              {{ pct | number:'1.0-0' }}%
+            </span>
+          </div>
+        </div>
+        }
+      </div>
+    </app-section-card>
+  </div>
+</div>
+
+<div ubDialogRoot handle="budgetModalHandle">
+  <ng-template ubDialogPortal>
+    <div ubDialogBackdrop></div>
+    <div ubDialogPopup class="sm:max-w-sm">
+      <div ubDialogHeader>
+        <h2 ubDialogTitle>{{ editingBudget() ? 'Edit budget' : 'New budget' }}</h2>
+        <p ubDialogDescription>Set a monthly spending limit for this category.</p>
+      </div>
+
+      <div class="grid gap-3 py-2">
+        <div class="grid gap-1.5">
+          <label class="text-sm font-medium">Category</label>
+          <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="bForm().category" (ngModelChange)="updateBFormCategory($event)" [disabled]="!!editingBudget()">
+            @for (c of categories; track c) {
+            <option [value]="c">{{ c }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="grid gap-1.5">
+          <label for="b-limit" class="text-sm font-medium">Monthly limit</label>
+          <input id="b-limit" type="text" inputmode="decimal" placeholder="500" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="bForm().limit" (ngModelChange)="updateBFormLimit($event)" />
+        </div>
+      </div>
+
+      <div ubDialogFooter>
+        <button type="button" class="px-3 py-2 text-sm font-medium hover:bg-accent rounded-md" ubDialogClose>
+          Cancel
+        </button>
+        <button type="button" class="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" ubDialogClose (click)="submitBudget()">
+          Save
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<div ubDialogRoot handle="goalModalHandle">
+  <ng-template ubDialogPortal>
+    <div ubDialogBackdrop></div>
+    <div ubDialogPopup class="sm:max-w-sm">
+      <div ubDialogHeader>
+        <h2 ubDialogTitle>New savings goal</h2>
+        <p ubDialogDescription>Track long-term savings for specific objectives.</p>
+      </div>
+
+      <div class="grid gap-3 py-2">
+        <div class="grid gap-1.5">
+          <label for="g-name" class="text-sm font-medium">Goal name</label>
+          <input id="g-name" type="text" placeholder="Japan trip" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="gForm().name" (ngModelChange)="updateGForm('name', $event)" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="grid gap-1.5">
+            <label for="g-target" class="text-sm font-medium">Target</label>
+            <input id="g-target" type="text" inputmode="decimal" placeholder="5000" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="gForm().target" (ngModelChange)="updateGForm('target', $event)" />
+          </div>
+
+          <div class="grid gap-1.5">
+            <label for="g-saved" class="text-sm font-medium">Already saved</label>
+            <input id="g-saved" type="text" inputmode="decimal" placeholder="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="gForm().saved" (ngModelChange)="updateGForm('saved', $event)" />
+          </div>
+        </div>
+
+        <div class="grid gap-1.5">
+          <label for="g-emoji" class="text-sm font-medium">Emoji</label>
+          <input id="g-emoji" type="text" maxlength="2" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="gForm().emoji" (ngModelChange)="updateGForm('emoji', $event)" />
+        </div>
+      </div>
+
+      <div ubDialogFooter>
+        <button type="button" class="px-3 py-2 text-sm font-medium hover:bg-accent rounded-md" ubDialogClose>
+          Cancel
+        </button>
+        <button type="button" class="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" ubDialogClose (click)="submitGoal()">
+          Create goal
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</div>
