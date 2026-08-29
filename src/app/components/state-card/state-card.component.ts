@@ -4,7 +4,7 @@ import { LucideArrowDownRight, LucideArrowUpRight, type LucideIcon } from "@luci
 
 import { AnimatedNumberComponent } from "../animated-number/animated-number.component";
 import { formatCurrency, formatPercent } from "../../lib/format";
-import { cn } from "@shared/utils/cn"
+import { cn } from "../../shared/lib/utils"
 
 @Component({
   selector: "app-stat-card",
