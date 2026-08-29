@@ -1,0 +1,129 @@
+<div class="space-y-5">
+  <app-page-header title="Investments" subtitle="Portfolio performance, allocation and holdings. Demo data only.">
+    <div actions>
+      <app-period-selector [value]="period()" (valueChange)="setPeriod($event)"></app-period-selector>
+    </div>
+  </app-page-header>
+
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="gradient-primary animate-rise relative overflow-hidden rounded-2xl p-5 text-primary-foreground shadow-[var(--shadow-glow)]">
+      <span class="pointer-events-none absolute -right-16 -top-20 h-52 w-52 rounded-full bg-white/15 blur-2xl"></span>
+      <p class="relative text-sm text-primary-foreground/80">Portfolio value</p>
+      <p class="relative mt-1 text-3xl font-bold num">
+        <app-animated-number [value]="totalValue()" formatter="formatCurrency"></app-animated-number>
+      </p>
+      <p class="relative mt-1 text-xs text-primary-foreground/80">
+        {{ formatPercent(gainPct()) }} all-time
+      </p>
+    </div>
+
+    @for (s of summaryCards(); track s.label; let i = $index) {
+    <div class="surface surface-hover animate-rise rounded-2xl p-5" [style.animation-delay]="(i + 1) * 60 + 'ms'">
+      <p class="text-sm text-muted-foreground">{{ s.label }}</p>
+      <p class="mt-1 text-2xl font-bold num">
+        @if (s.plain) {
+        {{ s.value }}
+        } @else {
+        <app-animated-number [value]="s.value" formatter="formatCurrency"></app-animated-number>
+        }
+      </p>
+    </div>
+    }
+  </div>
+
+  <div class="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+    <app-section-card title="Portfolio growth" description="Simulated value over the selected period">
+      <app-overview-chart [data]="series()" [keys]="['balance']" [height]="300"></app-overview-chart>
+    </app-section-card>
+
+    <app-section-card title="Asset allocation" description="Share of portfolio by class">
+      <app-donut-chart [data]="allocation()" [total]="totalValue()"></app-donut-chart>
+
+      <div class="mt-3 space-y-2">
+        @for (a of allocation(); track a.name) {
+        <div class="flex items-center gap-2 text-sm">
+          <span class="h-2.5 w-2.5 rounded-full" [style.background]="a.color"></span>
+          <span class="truncate">{{ a.name }}</span>
+          <span class="ml-auto num font-medium">{{ allocationPct(a.value) }}%</span>
+        </div>
+        }
+      </div>
+    </app-section-card>
+  </div>
+
+  <app-section-card title="Holdings" description="Tap a column chip to re-sort">
+    <div actions class="inline-flex items-center gap-0.5 rounded-full border border-border bg-muted/60 p-1">
+      @for (k of sortKeys; track k) {
+      <button type="button" class="rounded-full px-3 py-1 text-xs font-medium capitalize transition-all duration-300" ngClass="sortKey() === k ? 'bg-card text-foreground shadow-[var(--shadow-soft)]' : 'text-muted-foreground hover:text-foreground'" (click)="setSortKey(k)">
+        {{ k }}
+      </button>
+      }
+    </div>
+
+    <div class="space-y-1">
+      @for (h of holdings(); track h.id; let i = $index) {
+      @let up = isUp(h.ret);
+
+      <div [style.animation-delay]="i * 35 + 'ms'" class="animate-rise grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl px-3 py-2.5 transition-colors duration-200 hover:bg-accent/60 sm:grid-cols-[minmax(0,1.6fr)_120px_minmax(0,1fr)_auto]">
+        <div class="flex min-w-0 items-center gap-3">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent text-xs font-bold text-accent-foreground">
+            {{ h.symbol.slice(0, 3) }}
+          </span>
+          <div class="min-w-0">
+            <p class="truncate text-sm font-medium">{{ h.name }}</p>
+            <p class="text-xs text-muted-foreground">{{ h.symbol }} · {{ h.assetClass }}</p>
+          </div>
+        </div>
+
+        <div class="hidden sm:block">
+          <app-sparkline [data]="h.spark" [color]="up ? 'var(--chart-3)' : 'var(--chart-4)'" [height]="34"></app-sparkline>
+        </div>
+
+        <div class="hidden text-right sm:block">
+          <p class="text-sm font-semibold num">{{ formatCurrency(h.value) }}</p>
+          <p class="text-xs text-muted-foreground num">invested {{ formatCurrency(h.invested) }}</p>
+        </div>
+
+        <span class="inline-flex items-center gap-0.5 rounded-full border-transparent px-2.5 py-0.5 text-xs font-semibold num" ngClass="up ? 'bg-success/12 text-success' : 'bg-destructive/12 text-destructive'">
+          @if (up) {
+          <svg LucideArrowUpRight class="h-3 w-3"></svg>
+          } @else {
+          <svg LucideArrowDownRight class="h-3 w-3"></svg>
+          }
+          {{ formatPercent(h.ret) }}
+        </span>
+      </div>
+      }
+    </div>
+  </app-section-card>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <app-section-card title="Best performer">
+      <div class="flex items-center gap-3">
+        <span class="grid h-11 w-11 place-items-center rounded-xl bg-success/12 text-success">
+          <svg LucideCoins class="h-5 w-5"></svg>
+        </span>
+        <div>
+          <p class="font-semibold">{{ bestPerformer().name }}</p>
+          <p class="text-sm text-muted-foreground num">
+            {{ formatPercent(bestPerformer().ret) }} · {{ formatCurrency(bestPerformer().value) }}
+          </p>
+        </div>
+      </div>
+    </app-section-card>
+
+    <app-section-card title="Diversification">
+      <div class="flex items-center gap-3">
+        <span class="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
+          <svg LucidePieChart class="h-5 w-5"></svg>
+        </span>
+        <div>
+          <p class="font-semibold">{{ allocation().length }} asset classes</p>
+          <p class="text-sm text-muted-foreground">
+            Largest position is {{ largestPositionPct() }}% of the portfolio.
+          </p>
+        </div>
+      </div>
+    </app-section-card>
+  </div>
+</div>
