@@ -4,7 +4,7 @@ import { LucideArrowDownLeft, LucideArrowUpRight } from "@lucide/angular";
 
 import { Transaction } from "../../lib/finance-data";
 import { formatCurrency, formatDate } from "../../lib/format";
-import { cn } from "@shared/utils/cn";
+import { cn } from "../../shared/lib/utils";
 import { CategoryDotComponent } from "../category-dot/category-dot.component";
 
 @Component({
