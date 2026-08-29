@@ -1,0 +1,197 @@
+<div class="space-y-5">
+  <app-page-header [title]="greeting() + ', ' + firstName()" [subtitle]="subtitle()">
+    <div actions class="flex items-center gap-2">
+      <app-period-selector [value]="period()" (valueChange)="setPeriod($event)"></app-period-selector>
+
+      <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" (click)="openDrawer()">
+        <svg LucidePlus class="h-4 w-4"></svg>
+        Add transaction
+      </button>
+    </div>
+  </app-page-header>
+
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <app-stat-card label="Total balance" [value]="balance()" hint="Across all connected accounts" [featured]="true" [delay]="0">
+      <svg LucideWallet class="h-4 w-4"></svg>
+    </app-stat-card>
+
+    <app-stat-card label="Income" [value]="cur().income" [change]="pctChange(cur().income, prev().income)" hint="All incoming transfers" [delay]="60">
+      <svg LucideArrowUpRight class="h-4 w-4"></svg>
+    </app-stat-card>
+
+    <app-stat-card label="Expenses" [value]="cur().expenses" [change]="pctChange(cur().expenses, prev().expenses)" [invertChange]="true" hint="Bills, shopping & daily spend" [delay]="120">
+      <svg LucideCreditCard class="h-4 w-4"></svg>
+    </app-stat-card>
+
+    <app-stat-card label="Net savings" [value]="cur().net" [change]="pctChange(cur().net, prev().net)" [hint]="savingsRate() + '% of income saved'" [delay]="180">
+      <svg LucideTarget class="h-4 w-4"></svg>
+    </app-stat-card>
+  </div>
+
+  <div class="grid gap-4 xl:grid-cols-3">
+    <app-section-card title="Financial overview" description="Income, expenses and running balance" class="xl:col-span-2">
+      <div actions class="hidden sm:block">
+        <app-period-selector [value]="period()" (valueChange)="setPeriod($event)" [compact]="true"></app-period-selector>
+      </div>
+
+      <div class="mb-3 flex flex-wrap gap-4 text-xs">
+        @for (l of legend; track l.k) {
+        <span class="inline-flex items-center gap-1.5 text-muted-foreground">
+          <span class="h-2 w-2 rounded-full" [style.background]="l.c"></span> {{ l.k }}
+        </span>
+        }
+      </div>
+
+      <app-overview-chart [data]="series()" [height]="296"></app-overview-chart>
+    </app-section-card>
+
+    <app-section-card title="Spending by category" [description]="'Last ' + days() + ' days'">
+      <div actions>
+        <a routerLink="/analytics" class="text-xs font-medium text-primary hover:underline">Details</a>
+      </div>
+
+      @if (byCategory().length) {
+      <app-donut-chart [data]="donutData()"></app-donut-chart>
+
+      <ul class="mt-2 space-y-2">
+        @for (c of byCategory(); track c.category) {
+        <li class="flex items-center gap-2 text-xs">
+          <span class="h-2.5 w-2.5 rounded-full" [style.background]="categoryColors[c.category]"></span>
+          <span class="min-w-0 flex-1 truncate text-muted-foreground">{{ c.category }}</span>
+          <span class="num font-medium">{{ ((c.amount / byCategoryTotal()) * 100) | number:'1.0-0' }}%</span>
+          <span class="num w-20 text-right font-semibold">{{ formatCurrency(c.amount) }}</span>
+        </li>
+        }
+      </ul>
+      } @else {
+      <app-empty-state title="No spending yet" description="Add an expense to see the breakdown."></app-empty-state>
+      }
+    </app-section-card>
+  </div>
+
+  <app-section-card title="My wallets" [description]="wsWallets().length + ' accounts connected'">
+    <div actions>
+      <a routerLink="/wallets">
+        <button type="button" class="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium hover:bg-accent">
+          Manage <svg LucideArrowUpRight class="h-3.5 w-3.5"></svg>
+        </button>
+      </a>
+    </div>
+
+    <div class="flex gap-4 overflow-x-auto pb-1">
+      @for (w of wsWallets(); track w.id; let i = $index) {
+      <div [style.animation-delay]="i * 60 + 'ms'" class="animate-rise surface-hover relative w-[248px] shrink-0 overflow-hidden rounded-2xl border border-border bg-[image:var(--gradient-surface)] p-4">
+        <div class="flex items-start justify-between">
+          <div class="min-w-0">
+            <p class="truncate text-sm font-semibold">{{ w.name }}</p>
+            <p class="truncate text-[11px] text-muted-foreground">
+              {{ w.institution }} {{ w.last4 ? '•••• ' + w.last4 : '' }}
+            </p>
+          </div>
+          <svg LucideCreditCard class="h-4 w-4 shrink-0 text-primary"></svg>
+        </div>
+
+        <p class="mt-4 text-xl font-bold num">{{ formatCurrency(w.balance, w.currency) }}</p>
+        <p class="text-[11px] capitalize text-muted-foreground">{{ w.type }} · {{ w.currency }}</p>
+
+        <div class="mt-2 -mx-1">
+          <app-sparkline [data]="w.trend" [color]="w.balance >= 0 ? 'var(--chart-3)' : 'var(--chart-4)'" [height]="36"></app-sparkline>
+        </div>
+      </div>
+      }
+    </div>
+  </app-section-card>
+
+  <div class="grid gap-4 xl:grid-cols-3">
+    <app-section-card title="Recent transactions" class="xl:col-span-2">
+      <div actions>
+        <a routerLink="/transactions" class="text-xs font-medium text-primary hover:underline">View all</a>
+      </div>
+
+      <div class="mb-3 flex flex-wrap items-center gap-2">
+        <label class="relative min-w-0 flex-1">
+          <svg LucideSearch class="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"></svg>
+          <input type="text" [ngModel]="query()" (ngModelChange)="updateQuery($event)" placeholder="Search transactions" aria-label="Search transactions" class="h-9 w-full rounded-lg border border-border bg-muted/40 pl-9 pr-3 text-sm outline-none transition-all focus:border-primary/50 focus:bg-card focus:ring-4 focus:ring-primary/10" />
+        </label>
+
+        <select class="flex h-9 w-[168px] items-center rounded-lg border border-border bg-muted/40 px-3 text-xs outline-none" [ngModel]="category()" (ngModelChange)="updateCategory($event)">
+          @for (c of categories(); track c) {
+          <option [value]="c">{{ c === 'all' ? 'All categories' : c }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="-mx-2">
+        @if (recent().length) {
+        @for (t of recent(); track t.id) {
+        <app-transaction-item [tx]="t" [walletName]="walletName(t.walletId)"></app-transaction-item>
+        }
+        } @else {
+        <app-empty-state title="No matching transactions" description="Try a different search term or category filter."></app-empty-state>
+        }
+      </div>
+    </app-section-card>
+
+    <div class="space-y-4">
+      <app-section-card title="Financial goals" description="Progress toward your targets">
+        <ul class="space-y-4">
+          @for (g of store.goals().slice(0, 4); track g.id) {
+          @let pct = (g.saved / g.target) * 100 > 100 ? 100 : (g.saved / g.target) * 100;
+
+          <li>
+            <div class="flex items-center gap-2 text-sm">
+              <span aria-hidden="true">{{ g.emoji }}</span>
+              <span class="min-w-0 flex-1 truncate font-medium">{{ g.name }}</span>
+              <span class="num text-xs text-muted-foreground">
+                {{ formatCurrency(g.saved) }} / {{ formatCurrency(g.target) }}
+              </span>
+            </div>
+            <div class="relative mt-2 h-2 w-full overflow-hidden rounded-full bg-secondary">
+              <div class="h-full bg-primary transition-all duration-300" [style.width.%]="pct"></div>
+            </div>
+          </li>
+          }
+        </ul>
+
+        <a routerLink="/budget">
+          <button type="button" class="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent">
+            <svg LucideTarget class="h-3.5 w-3.5"></svg>
+            Manage goals
+          </button>
+        </a>
+      </app-section-card>
+
+      <app-section-card title="Upcoming payments" description="Next 30 days">
+        <ul class="space-y-1">
+          @for (r of store.recurring; track r.id) {
+          <li class="flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-accent/60">
+            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+              <svg LucideCalendarClock class="h-4 w-4"></svg>
+            </span>
+            <span class="min-w-0 flex-1">
+              <span class="block truncate text-sm font-medium">{{ r.name }}</span>
+              <span class="text-xs capitalize text-muted-foreground">{{ r.kind }} · {{ formatDate(r.dueDate) }}</span>
+            </span>
+            <span class="num text-sm font-semibold">{{ formatCurrency(r.amount) }}</span>
+          </li>
+          }
+        </ul>
+      </app-section-card>
+
+      <div class="surface animate-rise relative overflow-hidden p-5">
+        <div class="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/20 blur-2xl"></div>
+        <svg LucideSparkles class="h-5 w-5 text-primary"></svg>
+        <p class="mt-3 text-sm font-semibold">Insight</p>
+        <p class="mt-1 text-sm text-muted-foreground">
+          You spent
+          <span class="font-semibold text-foreground num">
+            {{ formatCurrency(cur().expenses - prev().expenses < 0 ? -(cur().expenses - prev().expenses) : cur().expenses - prev().expenses) }} </span>
+              {{ cur().expenses > prev().expenses ? 'more' : 'less' }} than the previous period. Your savings rate is
+              <span class="font-semibold text-foreground">{{ savingsRate() }}%</span>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <app-transaction-drawer [open]="drawer()" (openChange)="setDrawerOpen($event)"></app-transaction-drawer>
+</div>
