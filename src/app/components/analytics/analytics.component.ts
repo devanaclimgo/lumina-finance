@@ -12,7 +12,7 @@ import {
 import { FinanceStoreService } from "../../services/store.service";
 import { CATEGORY_COLORS } from "../../lib/finance-data";
 import { formatCurrency, formatPercent } from "../../lib/format";
-import { cn } from "@shared/utils/cn";
+import { cn } from "../../shared/lib/utils";
 import {
   buildSeries,
   inWorkspace,
