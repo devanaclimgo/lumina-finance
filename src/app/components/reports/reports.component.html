@@ -1,0 +1,146 @@
+<div class="space-y-5">
+  <app-page-header title="Reports" subtitle="Compose a clean financial summary, then export or share it.">
+    <div actions class="flex items-center gap-2">
+      <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-secondary px-3 py-2 text-sm font-medium hover:bg-secondary/80" (click)="print()">
+        <svg LucidePrinter class="h-4 w-4"></svg>
+        Print
+      </button>
+      <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" (click)="exportCsv()">
+        <svg LucideDownload class="h-4 w-4"></svg>
+        Export CSV
+      </button>
+    </div>
+  </app-page-header>
+
+  <div class="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
+    <app-section-card title="Report builder" description="Choose what to include">
+      <div class="space-y-4">
+        <div class="grid gap-1.5">
+          <label class="text-sm font-medium">Report type</label>
+          <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="type()" (ngModelChange)="setType($event)">
+            @for (t of reportTypes; track t) {
+            <option [value]="t">{{ t }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="grid gap-1.5">
+          <label class="text-sm font-medium">Period</label>
+          <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="period()" (ngModelChange)="setPeriod($event)">
+            @for (o of periodOptions; track o.v) {
+            <option [value]="o.v">{{ o.l }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="space-y-2.5">
+          <label class="text-sm font-medium">Sections</label>
+          @for (s of sections; track s.key) {
+          <label class="flex cursor-pointer items-center gap-2.5 rounded-xl px-2 py-1.5 text-sm transition-colors hover:bg-accent/60">
+            <input type="checkbox" class="h-4 w-4 rounded border-input" [checked]="has(s.key)" (change)="toggle(s.key)" />
+            {{ s.label }}
+          </label>
+          }
+        </div>
+
+        <button type="button" class="inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-secondary px-3 py-2 text-sm font-medium hover:bg-secondary/80" (click)="shareReport()">
+          <svg LucideShare2 class="h-4 w-4"></svg>
+          Share report
+        </button>
+      </div>
+    </app-section-card>
+
+    <div class="surface animate-rise overflow-hidden rounded-2xl">
+      <div class="gradient-primary px-6 py-6 text-primary-foreground">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p class="text-xs uppercase tracking-wide text-primary-foreground/75">Luma · {{ type() }}</p>
+            <h2 class="mt-1 text-xl font-bold">
+              {{ store.workspace() === 'business' ? 'Business' : 'Personal' }} financial report
+            </h2>
+            <p class="mt-1 text-sm text-primary-foreground/80">{{ rangeLabel() }}</p>
+          </div>
+          <span class="inline-flex items-center rounded-full border-transparent bg-white/15 px-2.5 py-0.5 text-xs font-semibold text-primary-foreground">
+            Prepared for {{ store.settings().name }}
+          </span>
+        </div>
+      </div>
+
+      <div class="space-y-6 p-6">
+        @if (has('summary')) {
+        <div class="grid gap-3 sm:grid-cols-4">
+          @for (s of summaryCards(); track s.label) {
+          <div class="rounded-xl bg-accent/60 p-4">
+            <p class="text-xs text-muted-foreground">{{ s.label }}</p>
+            <p class="mt-0.5 text-lg font-bold num">{{ formatCurrency(s.value) }}</p>
+          </div>
+          }
+        </div>
+        }
+
+        @if (has('trend')) {
+        <div>
+          <h3 class="mb-2 text-sm font-semibold">Cash-flow trend</h3>
+          <app-overview-chart [data]="series()" [keys]="['income', 'expenses']" [height]="260"></app-overview-chart>
+          <div class="mt-3">
+            <app-bars-chart [data]="barsSeries()" [keys]="barsKeys" [height]="200"></app-bars-chart>
+          </div>
+        </div>
+        }
+
+        @if (has('categories')) {
+        <div>
+          <h3 class="mb-2 text-sm font-semibold">Spending by category</h3>
+          <div class="overflow-hidden rounded-xl border border-border">
+            <table class="w-full text-sm">
+              <thead class="bg-muted/60 text-xs text-muted-foreground">
+                <tr>
+                  <th class="px-3 py-2 text-left font-medium">Category</th>
+                  <th class="px-3 py-2 text-right font-medium">Amount</th>
+                  <th class="px-3 py-2 text-right font-medium">Share</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of categories(); track c.category) {
+                <tr class="border-t border-border/70">
+                  <td class="px-3 py-2">
+                    <span class="flex items-center gap-2">
+                      <span class="h-2.5 w-2.5 rounded-full" [style.background]="categoryColors[c.category] ?? 'var(--chart-6)'"></span>
+                      {{ c.category }}
+                    </span>
+                  </td>
+                  <td class="px-3 py-2 text-right num">{{ formatCurrency(c.amount) }}</td>
+                  <td class="px-3 py-2 text-right num text-muted-foreground">{{ categoryShare(c.amount) }}%</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+        }
+
+        @if (has('transactions')) {
+        <div>
+          <h3 class="mb-2 text-sm font-semibold">Transactions ({{ current().length }})</h3>
+          <div class="max-h-80 space-y-1 overflow-y-auto pr-1">
+            @for (t of current().slice(0, 40); track t.id) {
+            <div class="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-sm odd:bg-muted/40">
+              <span class="min-w-0 truncate">{{ t.description }}</span>
+              <span class="shrink-0 text-xs text-muted-foreground">{{ formatDate(t.date) }}</span>
+              <span class="w-24 shrink-0 text-right num">{{ formatCurrency(txAmount(t.type, t.amount)) }}</span>
+            </div>
+            }
+          </div>
+        </div>
+        }
+
+        @if (enabled().length === 0) {
+        <div class="flex flex-col items-center gap-2 py-12 text-center text-muted-foreground">
+          <svg LucideFileText class="h-6 w-6"></svg>
+          <p class="text-sm">Pick at least one section to build the report.</p>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
