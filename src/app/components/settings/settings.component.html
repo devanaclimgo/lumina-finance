@@ -1,0 +1,157 @@
+<div class="space-y-5">
+  <app-page-header title="Settings" subtitle="Personalize Luma to match how you work."></app-page-header>
+
+  <div class="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+    <div class="space-y-4">
+      <app-section-card title="Profile" description="How you appear inside Luma">
+        <div class="flex items-center gap-4">
+          <span class="gradient-primary flex h-16 w-16 items-center justify-center rounded-full text-lg font-semibold text-primary-foreground">
+            {{ initials() }}
+          </span>
+          <div>
+            <p class="font-semibold">{{ store.settings().name }}</p>
+            <p class="text-sm text-muted-foreground">{{ store.settings().email }}</p>
+            <span class="mt-1.5 inline-flex items-center gap-1 rounded-full border-transparent bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+              <svg LucideCrown class="h-3 w-3"></svg>
+              {{ store.settings().plan }}
+            </span>
+          </div>
+        </div>
+
+        <div class="my-4 h-px bg-border"></div>
+
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div class="grid gap-1.5">
+            <label for="s-name" class="text-sm font-medium">Full name</label>
+            <input id="s-name" type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="name()" (ngModelChange)="updateName($event)" />
+          </div>
+          <div class="grid gap-1.5">
+            <label for="s-email" class="text-sm font-medium">Email</label>
+            <input id="s-email" type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="email()" (ngModelChange)="updateEmail($event)" />
+          </div>
+        </div>
+
+        <button type="button" class="mt-4 inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" (click)="saveProfile()">
+          Save changes
+        </button>
+      </app-section-card>
+
+      <app-section-card title="Appearance" description="Theme and visual density">
+        <div class="grid gap-3 sm:grid-cols-3">
+          @for (t of themes; track t.key) {
+          <button type="button" class="flex items-center gap-2 rounded-2xl border p-4 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5" [ngClass]="store.theme() === t.key ? 'border-primary/50 bg-primary/5 text-primary shadow-[var(--shadow-soft)]' : 'border-border bg-card text-muted-foreground'" (click)="setTheme(t.key)">
+            @if (t.key === 'light') { <svg LucideSun class="h-4 w-4"></svg> }
+            @if (t.key === 'dark') { <svg LucideMoon class="h-4 w-4"></svg> }
+            @if (t.key === 'system') { <svg LucideMonitor class="h-4 w-4"></svg> }
+            {{ t.label }}
+          </button>
+          }
+        </div>
+      </app-section-card>
+
+      <app-section-card title="Workspace & currency" description="Defaults applied across the app">
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div class="grid gap-1.5">
+            <label class="text-sm font-medium">Default workspace</label>
+            <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="store.settings().defaultWorkspace" (ngModelChange)="setDefaultWorkspace($event)">
+              <option value="personal">Personal</option>
+              <option value="business">Business</option>
+            </select>
+          </div>
+
+          <div class="grid gap-1.5">
+            <label class="text-sm font-medium">Currency</label>
+            <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="store.settings().currency" (ngModelChange)="setCurrency($event)">
+              @for (c of currencies; track c) {
+              <option [value]="c">{{ c }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="grid gap-1.5">
+            <label class="text-sm font-medium">Language</label>
+            <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="store.settings().language" (ngModelChange)="setLanguage($event)">
+              @for (l of languages; track l) {
+              <option [value]="l">{{ l }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="grid gap-1.5">
+            <label class="text-sm font-medium">Timezone</label>
+            <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="store.settings().timezone" (ngModelChange)="setTimezone($event)">
+              @for (z of timezones; track z) {
+              <option [value]="z">{{ z }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <label class="mt-4 flex items-center justify-between gap-3 rounded-xl bg-accent/60 p-3">
+          <span>
+            <span class="block text-sm font-medium">Include pending in totals</span>
+            <span class="block text-xs text-muted-foreground">Count card holds that have not settled yet</span>
+          </span>
+          <button type="button" role="switch" [attr.aria-checked]="store.settings().includePending" class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors" [ngClass]="store.settings().includePending ? 'bg-primary' : 'bg-muted'" (click)="setIncludePending(!store.settings().includePending)">
+            <span class="inline-block h-4.5 w-4.5 transform rounded-full bg-white shadow transition-transform" [ngClass]="store.settings().includePending ? 'translate-x-6' : 'translate-x-1'"></span>
+          </button>
+        </label>
+      </app-section-card>
+    </div>
+
+    <div class="space-y-4">
+      <app-section-card title="Notifications" description="Choose what reaches you">
+        <div class="space-y-1">
+          @for (n of notifs; track n.key) {
+          <label class="flex items-center justify-between gap-3 rounded-xl px-2 py-2.5 transition-colors hover:bg-accent/60">
+            <span class="min-w-0">
+              <span class="flex items-center gap-2 text-sm font-medium">
+                <svg LucideBell class="h-3.5 w-3.5 text-primary"></svg>
+                {{ n.label }}
+              </span>
+              <span class="mt-0.5 block text-xs text-muted-foreground">{{ n.hint }}</span>
+            </span>
+            <button type="button" role="switch" [attr.aria-checked]="!!store.settings().notifications[n.key]" class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors" [ngClass]="store.settings().notifications[n.key] ? 'bg-primary' : 'bg-muted'" (click)="toggleNotification(n.key, !store.settings().notifications[n.key])">
+              <span class="inline-block h-4.5 w-4.5 transform rounded-full bg-white shadow transition-transform" [ngClass]="store.settings().notifications[n.key] ? 'translate-x-6' : 'translate-x-1'"></span>
+            </button>
+          </label>
+          }
+        </div>
+      </app-section-card>
+
+      <app-section-card title="Plan" description="Your current subscription">
+        <div class="gradient-primary rounded-2xl p-5 text-primary-foreground">
+          <p class="text-xs uppercase tracking-wide text-primary-foreground/75">Current plan</p>
+          <p class="mt-1 text-2xl font-bold">{{ store.settings().plan }}</p>
+          <p class="mt-1 text-sm text-primary-foreground/80">
+            Unlimited goals, advanced analytics, investments and the business workspace.
+          </p>
+        </div>
+
+        <div class="mt-3 grid gap-2 sm:grid-cols-3">
+          @for (p of plans; track p) {
+          <button type="button" class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium" [ngClass]="store.settings().plan === p ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-secondary hover:bg-secondary/80'" (click)="setPlan(p)">
+            {{ p }}
+          </button>
+          }
+        </div>
+      </app-section-card>
+
+      <app-section-card title="Data" description="Everything is stored locally in your browser">
+        <div class="flex items-start gap-3">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground">
+            <svg LucideUserRound class="h-4 w-4"></svg>
+          </span>
+          <p class="text-sm text-muted-foreground">
+            Resetting restores the original demo dataset and clears anything you added.
+          </p>
+        </div>
+
+        <button type="button" class="mt-4 inline-flex items-center gap-1.5 rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90" (click)="resetDemo()">
+          <svg LucideRotateCcw class="h-4 w-4"></svg>
+          Reset demo data
+        </button>
+      </app-section-card>
+    </div>
+  </div>
+</div>
