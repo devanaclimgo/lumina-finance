@@ -1,0 +1,163 @@
+<div class="space-y-5" ubAlertDialogRoot handle="confirmDialogHandle">
+  <app-page-header title="Transactions" [subtitle]="filtered().length + ' entries in your ' + store.workspace() + ' workspace'">
+    <div actions>
+      <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" (click)="openNewTransaction()">
+        <svg LucidePlus class="h-4 w-4"></svg>
+        Add transaction
+      </button>
+    </div>
+  </app-page-header>
+
+  <div class="grid gap-4 sm:grid-cols-3">
+    <app-stat-card label="Total income" [value]="totalsData().income" hint="Filtered results"></app-stat-card>
+    <app-stat-card label="Total expenses" [value]="totalsData().expenses" hint="Filtered results" [delay]="60"></app-stat-card>
+    <app-stat-card label="Net cash flow" [value]="totalsData().net" hint="Income minus expenses" [delay]="120"></app-stat-card>
+  </div>
+
+  <app-section-card title="All transactions" description="Filter, sort and manage your ledger">
+    <div class="mb-4 flex flex-wrap items-center gap-2">
+      <label class="relative min-w-[200px] flex-1">
+        <svg LucideSearch class="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"></svg>
+        <input type="text" [ngModel]="query()" (ngModelChange)="updateQuery($event)" placeholder="Search transactions" aria-label="Search transactions" class="h-9 w-full rounded-lg border border-border bg-muted/40 pl-9 pr-3 text-sm outline-none transition-all focus:border-primary/50 focus:bg-card focus:ring-4 focus:ring-primary/10" />
+      </label>
+
+      <select class="flex h-9 w-[130px] items-center rounded-lg border border-border bg-muted/40 px-3 text-xs outline-none" [ngModel]="range()" (ngModelChange)="updateRange($event)">
+        <option value="7">Last 7 days</option>
+        <option value="30">Last 30 days</option>
+        <option value="90">Last 3 months</option>
+        <option value="365">Last year</option>
+      </select>
+
+      <select class="flex h-9 w-[150px] items-center rounded-lg border border-border bg-muted/40 px-3 text-xs outline-none" [ngModel]="category()" (ngModelChange)="updateCategory($event)">
+        @for (c of categories(); track c) {
+        <option [value]="c">{{ c === 'all' ? 'All categories' : c }}</option>
+        }
+      </select>
+
+      <select class="flex h-9 w-[150px] items-center rounded-lg border border-border bg-muted/40 px-3 text-xs outline-none" [ngModel]="walletId()" (ngModelChange)="updateWalletId($event)">
+        <option value="all">All wallets</option>
+        @for (w of wsWallets(); track w.id) {
+        <option [value]="w.id">{{ w.name }}</option>
+        }
+      </select>
+
+      <select class="flex h-9 w-[120px] items-center rounded-lg border border-border bg-muted/40 px-3 text-xs outline-none" [ngModel]="type()" (ngModelChange)="updateType($event)">
+        <option value="all">All types</option>
+        <option value="income">Income</option>
+        <option value="expense">Expense</option>
+      </select>
+
+      <select class="flex h-9 w-[150px] items-center rounded-lg border border-border bg-muted/40 px-3 text-xs outline-none" [ngModel]="sort()" (ngModelChange)="updateSort($event)">
+        <option value="date-desc">Newest first</option>
+        <option value="date-asc">Oldest first</option>
+        <option value="amount-desc">Highest amount</option>
+        <option value="amount-asc">Lowest amount</option>
+      </select>
+
+      <button type="button" class="inline-flex h-9 items-center gap-1 rounded-md px-2.5 text-xs font-medium hover:bg-accent" (click)="clearFilters()">
+        <svg LucideX class="h-3.5 w-3.5"></svg>
+        Clear
+      </button>
+    </div>
+
+    @if (selected().length > 0) {
+    <div class="animate-rise mb-3 flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/8 px-4 py-2.5">
+      <p class="text-sm font-medium">{{ selected().length }} selected</p>
+      <button type="button" class="ml-auto inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-destructive hover:text-destructive/80" ubAlertDialogTrigger (click)="askDeleteSelected()">
+        <svg LucideTrash2 class="h-3.5 w-3.5"></svg>
+        Delete selected
+      </button>
+      <button type="button" class="text-xs font-medium hover:bg-accent rounded-md px-2 py-1" (click)="clearSelection()">
+        Cancel
+      </button>
+    </div>
+    }
+
+    @if (filtered().length === 0) {
+    <app-empty-state title="No transactions found" description="Adjust your filters or add a new transaction to get started.">
+      <button type="button" class="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90" (click)="openNewTransaction()">
+        Add transaction
+      </button>
+    </app-empty-state>
+    } @else {
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[860px] text-sm">
+        <thead>
+          <tr class="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
+            <th class="w-10 py-2.5 pl-2">
+              <input type="checkbox" class="h-4 w-4 rounded border-input" [checked]="allSelected()" (change)="toggleSelectAll($any($event.target).checked)" aria-label="Select all" />
+            </th>
+            <th class="py-2.5 font-medium">Transaction</th>
+            <th class="py-2.5 font-medium">Category</th>
+            <th class="py-2.5 font-medium">Wallet</th>
+            <th class="py-2.5 font-medium">Date</th>
+            <th class="py-2.5 font-medium">Status</th>
+            <th class="py-2.5 text-right font-medium">Amount</th>
+            <th class="py-2.5 pr-2 text-right font-medium">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (tx of filtered().slice(0, 60); track tx.id; let i = $index) {
+          <tr [style.animation-delay]="(i > 12 ? 12 : i) * 25 + 'ms'" class="animate-rise group border-b border-border/60 transition-colors hover:bg-accent/50">
+            <td class="py-3 pl-2">
+              <input type="checkbox" class="h-4 w-4 rounded border-input" [checked]="isSelected(tx.id)" (change)="toggleSelected(tx.id, $any($event.target).checked)" [attr.aria-label]="'Select ' + tx.description" />
+            </td>
+            <td class="py-3 font-medium">{{ tx.description }}</td>
+            <td class="py-3">
+              <span class="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span class="h-2 w-2 rounded-full" [style.background]="categoryColor(tx.category)"></span>
+                {{ tx.category }}
+              </span>
+            </td>
+            <td class="py-3 text-xs text-muted-foreground">{{ walletName(tx.walletId) }}</td>
+            <td class="py-3 text-xs text-muted-foreground">{{ formatDate(tx.date, 'long') }}</td>
+            <td class="py-3">
+              <span class="rounded-full px-2 py-0.5 text-[11px] font-medium capitalize" [ngClass]="tx.status === 'completed' ? 'bg-success/12 text-success' : tx.status === 'pending' ? 'bg-warning/15 text-warning' : 'bg-destructive/12 text-destructive'">
+                {{ tx.status }}
+              </span>
+            </td>
+            <td class="py-3 text-right font-semibold num" [ngClass]="tx.type === 'income' ? 'text-success' : ''">
+              {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(tx.amount) }}
+            </td>
+            <td class="py-3 pr-2">
+              <div class="flex justify-end gap-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+                <button type="button" class="grid h-7 w-7 place-items-center rounded-md hover:bg-accent" aria-label="Edit" (click)="openEditTransaction(tx)">
+                  <svg LucidePencil class="h-3.5 w-3.5"></svg>
+                </button>
+                <button type="button" class="grid h-7 w-7 place-items-center rounded-md hover:bg-accent" aria-label="Duplicate" (click)="duplicateTransaction(tx)">
+                  <svg LucideCopy class="h-3.5 w-3.5"></svg>
+                </button>
+                <button type="button" class="grid h-7 w-7 place-items-center rounded-md text-destructive hover:bg-accent" aria-label="Delete" ubAlertDialogTrigger (click)="askDeleteOne(tx.id)">
+                  <svg LucideTrash2 class="h-3.5 w-3.5"></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </app-section-card>
+
+  <app-transaction-drawer [open]="drawer()" (openChange)="setDrawerOpen($event)" [editing]="editing()"></app-transaction-drawer>
+
+  <ng-template ubAlertDialogPortal>
+    <div ubAlertDialogBackdrop></div>
+    <div ubAlertDialogPopup>
+      <div ubAlertDialogHeader>
+        <h2 ubAlertDialogTitle>Delete {{ confirmDeleteLabel() }} transaction(s)?</h2>
+        <p ubAlertDialogDescription>This removes the entries from your ledger. This action cannot be undone.</p>
+      </div>
+
+      <div ubAlertDialogFooter>
+        <button type="button" class="px-3 py-2 text-sm font-medium hover:bg-accent rounded-md" ubAlertDialogClose>
+          Cancel
+        </button>
+        <button type="button" ubAlertDialogAction (click)="confirmDelete()">
+          Delete
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</div>
