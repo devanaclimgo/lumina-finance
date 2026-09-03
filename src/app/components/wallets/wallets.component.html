@@ -1,0 +1,199 @@
+<div class="space-y-5" ubDialogRoot>
+  <app-page-header title="Wallets & accounts" subtitle="Every balance across banks, cards, cash and brokerage accounts.">
+    <div actions>
+      <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" ubDialogTrigger (click)="openNew()">
+        <svg LucidePlus class="h-4 w-4"></svg>
+        Add wallet
+      </button>
+    </div>
+  </app-page-header>
+
+  <div class="grid gap-4 sm:grid-cols-3">
+    @for (s of summaryCards(); track s.label; let i = $index) {
+    <div class="surface surface-hover animate-rise rounded-2xl p-5" [style.animation-delay]="i * 60 + 'ms'">
+      <p class="text-sm text-muted-foreground">{{ s.label }}</p>
+      <p class="mt-1 text-2xl font-bold num">
+        <app-animated-number [value]="s.value" formatter="formatCurrency"></app-animated-number>
+      </p>
+    </div>
+    }
+  </div>
+
+  <div class="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+    <app-section-card title="Your accounts" [description]="list().length + ' in this workspace'">
+      @if (list().length === 0) {
+      <app-empty-state title="No wallets yet" description="Add a bank account, card or cash wallet to start tracking balances.">
+        <svg LucideWallet class="h-5 w-5"></svg>
+        <button type="button" class="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90" ubDialogTrigger (click)="openNew()">
+          Add wallet
+        </button>
+      </app-empty-state>
+      } @else {
+      <div class="grid gap-3 sm:grid-cols-2">
+        @for (w of list(); track w.id; let i = $index) {
+        <button type="button" [style.animation-delay]="i * 50 + 'ms'" class="animate-rise group relative overflow-hidden rounded-2xl border p-4 text-left transition-all duration-300 hover:-translate-y-0.5" [ngClass]="{
+            'gradient-primary border-transparent text-primary-foreground shadow-[var(--shadow-glow)]': isCredit(w),
+            'border-border bg-card shadow-[var(--shadow-soft)]': !isCredit(w),
+            'ring-2 ring-primary/40': isActive(w.id) && !isCredit(w),
+            'ring-2 ring-primary/60': isActive(w.id) && isCredit(w)
+          }" (click)="selectWallet(w.id)">
+          @if (isCredit(w)) {
+          <span class="pointer-events-none absolute -right-12 -top-16 h-44 w-44 rounded-full bg-white/15 blur-2xl"></span>
+          }
+
+          <div class="relative flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <p class="truncate text-sm font-semibold">{{ w.name }}</p>
+              <p class="truncate text-xs" [ngClass]="isCredit(w) ? 'text-primary-foreground/75' : 'text-muted-foreground'">
+                {{ w.institution }}{{ w.last4 ? ' ···· ' + w.last4 : '' }}
+              </p>
+            </div>
+            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-transform duration-300 group-hover:scale-110" [ngClass]="isCredit(w) ? 'bg-white/15' : 'bg-accent text-accent-foreground'">
+              @switch (w.type) {
+              @case ('bank') { <svg LucideLandmark class="h-4 w-4"></svg> }
+              @case ('credit') { <svg LucideCreditCard class="h-4 w-4"></svg> }
+              @case ('cash') { <svg LucideWallet class="h-4 w-4"></svg> }
+              @case ('investment') { <svg LucideLineChart class="h-4 w-4"></svg> }
+              }
+            </span>
+          </div>
+
+          <p class="relative mt-4 text-xl font-bold num">{{ formatCurrency(w.balance) }}</p>
+
+          <div class="relative mt-1 h-9 opacity-80">
+            <app-sparkline [data]="w.trend" [color]="isCredit(w) ? 'rgba(255,255,255,0.9)' : 'var(--chart-1)'" [height]="36"></app-sparkline>
+          </div>
+
+          <p class="relative mt-1 text-[11px]" [ngClass]="isCredit(w) ? 'text-primary-foreground/70' : 'text-muted-foreground'">
+            Updated {{ relativeDay(w.updatedAt).toLowerCase() }}
+          </p>
+        </button>
+        }
+      </div>
+      }
+    </app-section-card>
+
+    <div class="space-y-4">
+      <app-section-card [title]="active() ? active()!.name : 'Account details'" [description]="active() ? active()!.type + ' · ' + active()!.currency : ''">
+        @if (active()) {
+        <div actions class="flex items-center gap-1.5">
+          <button type="button" class="inline-flex items-center rounded-md bg-secondary px-2.5 py-1.5 text-xs font-medium hover:bg-secondary/80" ubDialogTrigger (click)="openEdit(active()!)">
+            Edit
+          </button>
+          <button type="button" aria-label="Delete wallet" class="grid h-8 w-8 place-items-center rounded-md hover:bg-accent" (click)="deleteActive()">
+            <svg LucideTrash2 class="h-4 w-4"></svg>
+          </button>
+        </div>
+        }
+
+        @if (active(); as w) {
+        <div class="space-y-3">
+          <div class="rounded-xl bg-accent/60 p-4">
+            <p class="text-xs text-muted-foreground">Current balance</p>
+            <p class="text-2xl font-bold num">
+              <app-animated-number [value]="w.balance" formatter="formatCurrency"></app-animated-number>
+            </p>
+          </div>
+
+          <dl class="grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <dt class="text-xs text-muted-foreground">Institution</dt>
+              <dd class="font-medium">{{ w.institution }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-muted-foreground">Type</dt>
+              <dd class="font-medium capitalize">{{ w.type }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-muted-foreground">Currency</dt>
+              <dd class="font-medium">{{ w.currency }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-muted-foreground">Last update</dt>
+              <dd class="font-medium">{{ relativeDay(w.updatedAt) }}</dd>
+            </div>
+          </dl>
+        </div>
+        } @else {
+        <p class="text-sm text-muted-foreground">Select a wallet to see details.</p>
+        }
+      </app-section-card>
+
+      <app-section-card title="Recent activity" description="Transactions on this account">
+        @if (walletTx().length === 0) {
+        <app-empty-state title="No transactions yet" description="Movements on this wallet will appear here.">
+          <svg LucideBuilding2 class="h-5 w-5"></svg>
+        </app-empty-state>
+        } @else {
+        <div class="-mx-2">
+          @for (t of walletTx(); track t.id) {
+          <app-transaction-item [tx]="t"></app-transaction-item>
+          }
+        </div>
+        }
+      </app-section-card>
+    </div>
+  </div>
+
+  <ng-template ubDialogPortal>
+    <div ubDialogBackdrop></div>
+    <div ubDialogPopup class="sm:max-w-md">
+      <div ubDialogHeader>
+        <h2 ubDialogTitle>{{ editing() ? 'Edit wallet' : 'Add wallet' }}</h2>
+      </div>
+
+      <div class="grid gap-3">
+        <div class="grid gap-1.5">
+          <label for="w-name" class="text-sm font-medium">Name</label>
+          <input id="w-name" type="text" placeholder="Everyday Checking" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="form().name" (ngModelChange)="updateForm('name', $event)" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="grid gap-1.5">
+            <label class="text-sm font-medium">Type</label>
+            <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm capitalize" [ngModel]="form().type" (ngModelChange)="updateForm('type', $event)">
+              @for (t of walletTypes; track t) {
+              <option [value]="t" class="capitalize">{{ t }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="grid gap-1.5">
+            <label class="text-sm font-medium">Currency</label>
+            <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="form().currency" (ngModelChange)="updateForm('currency', $event)">
+              @for (c of currencies; track c) {
+              <option [value]="c">{{ c }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="grid gap-1.5">
+            <label for="w-balance" class="text-sm font-medium">Balance</label>
+            <input id="w-balance" type="text" inputmode="decimal" placeholder="0.00" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="form().balance" (ngModelChange)="updateForm('balance', $event)" />
+          </div>
+
+          <div class="grid gap-1.5">
+            <label for="w-last4" class="text-sm font-medium">Last 4</label>
+            <input id="w-last4" type="text" maxlength="4" placeholder="4821" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="form().last4" (ngModelChange)="updateForm('last4', $event)" />
+          </div>
+        </div>
+
+        <div class="grid gap-1.5">
+          <label for="w-inst" class="text-sm font-medium">Institution</label>
+          <input id="w-inst" type="text" placeholder="Northline Bank" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" [ngModel]="form().institution" (ngModelChange)="updateForm('institution', $event)" />
+        </div>
+      </div>
+
+      <div ubDialogFooter>
+        <button type="button" class="px-3 py-2 text-sm font-medium hover:bg-accent rounded-md" ubDialogClose>
+          Cancel
+        </button>
+        <button type="button" class="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" ubDialogClose (click)="submit()">
+          {{ editing() ? 'Save changes' : 'Add wallet' }}
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</div>
