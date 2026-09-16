@@ -1,4 +1,4 @@
-<div class="space-y-5" ubAlertDialogRoot handle="confirmDialogHandle">
+<div class="space-y-5" ubAlertDialogRoot [handle]="confirmDialogHandle">
   <app-page-header title="Transactions" [subtitle]="filtered().length + ' entries in your ' + store.workspace() + ' workspace'">
     <div actions>
       <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" (click)="openNewTransaction()">
