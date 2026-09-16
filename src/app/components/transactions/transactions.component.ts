@@ -2,7 +2,7 @@ import { Component, computed, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgClass } from "@angular/common";
 
-import { createRdxAlertDialogHandle } from "../../shared/components/ui/alert-dialog";
+import { createRdxAlertDialogHandle, UbAlertDialogActionDirective, UbAlertDialogBackdropDirective, UbAlertDialogCloseDirective, UbAlertDialogDescriptionDirective, UbAlertDialogFooterDirective, UbAlertDialogHeaderDirective, UbAlertDialogPopupComponent, UbAlertDialogPortalDirective, UbAlertDialogRootDirective, UbAlertDialogTitleDirective, UbAlertDialogTriggerDirective } from "../../shared/components/ui/alert-dialog";
 
 import { FinanceStoreService } from "../../services/store.service";
 import { ToastService } from "../../services/toast.service";
@@ -29,6 +29,17 @@ type SortKey = "date-desc" | "date-asc" | "amount-desc" | "amount-asc";
     SectionCardComponent,
     EmptyStateComponent,
     TransactionDrawerComponent,
+    UbAlertDialogRootDirective,
+    UbAlertDialogTriggerDirective,
+    UbAlertDialogPortalDirective,
+    UbAlertDialogBackdropDirective,
+    UbAlertDialogPopupComponent,
+    UbAlertDialogCloseDirective,
+    UbAlertDialogHeaderDirective,
+    UbAlertDialogFooterDirective,
+    UbAlertDialogTitleDirective,
+    UbAlertDialogDescriptionDirective,
+    UbAlertDialogActionDirective,
   ],
   host: {
     class: "flex flex-col gap-4",
