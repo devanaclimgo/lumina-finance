@@ -7,6 +7,7 @@ import {
   OnDestroy,
   SimpleChanges,
 } from "@angular/core";
+import { formatCurrency } from "../../lib/format";
 
 @Component({
   selector: "app-animated-number",
@@ -24,6 +25,8 @@ export class AnimatedNumberComponent implements OnChanges, OnDestroy {
 
   private from = 0;
   private rafId: number | null = null;
+
+  formatCurrency = formatCurrency;
 
   constructor(private readonly cdr: ChangeDetectorRef) {}
 
