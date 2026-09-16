@@ -13,7 +13,7 @@
     <div class="surface surface-hover animate-rise rounded-2xl p-5" [style.animation-delay]="i * 60 + 'ms'">
       <p class="text-sm text-muted-foreground">{{ s.label }}</p>
       <p class="mt-1 text-2xl font-bold num">
-        <app-animated-number [value]="s.value" formatter="formatCurrency"></app-animated-number>
+        <app-animated-number [value]="s.value" [format]="formatCurrency"></app-animated-number>
       </p>
     </div>
     }
@@ -91,7 +91,7 @@
           <div class="rounded-xl bg-accent/60 p-4">
             <p class="text-xs text-muted-foreground">Current balance</p>
             <p class="text-2xl font-bold num">
-              <app-animated-number [value]="w.balance" formatter="formatCurrency"></app-animated-number>
+              <app-animated-number [value]="w.balance" [format]="formatCurrency"></app-animated-number>
             </p>
           </div>
 
