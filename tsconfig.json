@@ -15,7 +15,7 @@
     "target": "ES2022",
     "module": "preserve",
     "paths": {
-      "baseUrl": ["src/app/base-url"],
+      "baseUrl": ["src/app/components"],
       "@shared/*": ["src/app/shared/*"]
     }
   },
