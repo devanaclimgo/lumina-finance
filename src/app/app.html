@@ -1,15 +1,15 @@
-<div class="flex min-h-screen bg-background text-foreground">
-
+<div class="flex min-h-screen w-full bg-background text-foreground">
   <app-sidebar [collapsed]="sidebarCollapsed" [workspace]="workspace" [userName]="userName" [plan]="plan" (toggle)="sidebarCollapsed = !sidebarCollapsed" />
 
-  <main class="min-w-0 flex-1" [class.lg:pl-0]="true">
-    <div class="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
+  <div class="flex min-w-0 flex-1 flex-col">
+    <app-top-bar />
 
-      <router-outlet />
-
-    </div>
-  </main>
+    <main class="min-w-0 flex-1 px-4 pb-28 pt-6 sm:px-6 lg:pb-10">
+      <div class="mx-auto w-full max-w-[1400px]">
+        <router-outlet />
+      </div>
+    </main>
+  </div>
 
   <app-mobile-nav [workspace]="workspace" />
-
 </div>
