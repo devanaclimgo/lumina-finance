@@ -14,11 +14,11 @@ import { periodDays, type PeriodKey } from "../../lib/selectors";
 import type { Investment } from "../../lib/finance-data";
 
 const CLASS_COLORS: Record<string, string> = {
-  Stocks: "var(--chart-1)",
-  ETFs: "var(--chart-2)",
-  Crypto: "var(--chart-5)",
-  "Fixed income": "var(--chart-3)",
-  Other: "var(--chart-6)",
+  Stocks: "oklch(var(--chart-1))",
+  ETFs: "oklch(var(--chart-2))",
+  Crypto: "oklch(var(--chart-5))",
+  "Fixed income": "oklch(var(--chart-3))",
+  Other: "oklch(var(--chart-6))",
 };
 
 type SortKey = "value" | "return";
@@ -70,7 +70,7 @@ export class InvestmentsComponent {
     return [...map.entries()].map(([name, value]) => ({
       name,
       value: Math.round(value),
-      color: CLASS_COLORS[name] ?? "var(--chart-6)",
+      color: CLASS_COLORS[name] ?? "oklch(var(--chart-6))",
     }));
   });
 

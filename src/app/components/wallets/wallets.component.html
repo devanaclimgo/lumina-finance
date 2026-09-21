@@ -32,8 +32,8 @@
       <div class="grid gap-3 sm:grid-cols-2">
         @for (w of list(); track w.id; let i = $index) {
         <button type="button" [style.animation-delay]="i * 50 + 'ms'" class="animate-rise group relative overflow-hidden rounded-2xl border p-4 text-left transition-all duration-300 hover:-translate-y-0.5" [ngClass]="{
-            'gradient-primary border-transparent text-primary-foreground shadow-[var(--shadow-glow)]': isCredit(w),
-            'border-border bg-card shadow-[var(--shadow-soft)]': !isCredit(w),
+            'gradient-primary border-transparent text-primary-foreground shadow-[oklch(var(--shadow-glow))]': isCredit(w),
+            'border-border bg-card shadow-[oklch(var(--shadow-soft))]': !isCredit(w),
             'ring-2 ring-primary/40': isActive(w.id) && !isCredit(w),
             'ring-2 ring-primary/60': isActive(w.id) && isCredit(w)
           }" (click)="selectWallet(w.id)">
@@ -61,7 +61,7 @@
           <p class="relative mt-4 text-xl font-bold num">{{ formatCurrency(w.balance) }}</p>
 
           <div class="relative mt-1 h-9 opacity-80">
-            <app-sparkline [data]="w.trend" [color]="isCredit(w) ? 'rgba(255,255,255,0.9)' : 'var(--chart-1)'" [height]="36"></app-sparkline>
+            <app-sparkline [data]="w.trend" [color]="isCredit(w) ? 'rgba(255,255,255,0.9)' : 'oklch(var(--chart-1))'" [height]="36"></app-sparkline>
           </div>
 
           <p class="relative mt-1 text-[11px]" [ngClass]="isCredit(w) ? 'text-primary-foreground/70' : 'text-muted-foreground'">

@@ -78,7 +78,7 @@ export class ReportsComponent {
   totalSpend = computed(() => this.categories().reduce((a, c) => a + c.amount, 0));
 
   barsSeries = computed(() => this.series().map((p) => ({ label: p.label, balance: p.balance })));
-  barsKeys = [{ key: "balance", color: "var(--chart-2)", label: "Balance" }];
+  barsKeys = [{ key: "balance", color: "oklch(var(--chart-2))", label: "Balance" }];
 
   summaryCards = computed(() => [
     { label: "Income", value: this.cur().income },

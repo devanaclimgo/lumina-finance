@@ -37,7 +37,7 @@
       <button type="button" (click)="setType('expense')" class="
             rounded-lg py-2 text-sm font-semibold
             capitalize transition-all duration-300
-          " [class.bg-card]="form().type === 'expense'" [class.text-foreground]="form().type === 'expense'" [class.shadow-[var(--shadow-soft)]]="
+          " [class.bg-card]="form().type === 'expense'" [class.text-foreground]="form().type === 'expense'" [class.shadow-[oklch(var(--shadow-soft))]]="
             form().type === 'expense'
           " [class.text-muted-foreground]="form().type !== 'expense'">
         Expense
@@ -46,7 +46,7 @@
       <button type="button" (click)="setType('income')" class="
             rounded-lg py-2 text-sm font-semibold
             capitalize transition-all duration-300
-          " [class.bg-success]="form().type === 'income'" [class.text-success-foreground]="form().type === 'income'" [class.shadow-[var(--shadow-soft)]]="
+          " [class.bg-success]="form().type === 'income'" [class.text-success-foreground]="form().type === 'income'" [class.shadow-[oklch(var(--shadow-soft))]]="
             form().type === 'income'
           " [class.text-muted-foreground]="form().type !== 'income'">
         Income

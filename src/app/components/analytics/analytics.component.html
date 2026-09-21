@@ -35,8 +35,8 @@
   <div class="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
     <app-section-card title="Monthly comparison" description="Bucketed income and spending">
       <app-bars-chart [data]="compare()" [keys]="[
-          { key: 'income', color: 'var(--chart-3)', label: 'Income' },
-          { key: 'expenses', color: 'var(--chart-1)', label: 'Expenses' }
+          { key: 'income', color: 'oklch(var(--chart-3))', label: 'Income' },
+          { key: 'expenses', color: 'oklch(var(--chart-1))', label: 'Expenses' }
         ]" [height]="300"></app-bars-chart>
     </app-section-card>
 

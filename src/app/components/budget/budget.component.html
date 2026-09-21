@@ -43,10 +43,10 @@
       } @else {
       <div class="grid gap-3 sm:grid-cols-2">
         @for (r of rows(); track r.id; let i = $index) {
-        <div [style.animation-delay]="i * 40 + 'ms'" class="animate-rise group rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] transition-all duration-300 hover:-translate-y-0.5">
+        <div [style.animation-delay]="i * 40 + 'ms'" class="animate-rise group rounded-2xl border border-border bg-card p-4 shadow-[oklch(var(--shadow-soft))] transition-all duration-300 hover:-translate-y-0.5">
           <div class="flex items-start justify-between gap-2">
             <div class="flex min-w-0 items-center gap-2">
-              <span class="h-2.5 w-2.5 shrink-0 rounded-full" [style.background]="categoryColors[r.category] ?? 'var(--chart-1)'"></span>
+              <span class="h-2.5 w-2.5 shrink-0 rounded-full" [style.background]="categoryColors[r.category] ?? 'oklch(var(--chart-1))'"></span>
               <p class="truncate text-sm font-semibold">{{ r.category }}</p>
             </div>
             <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border-transparent" [ngClass]="statusTone[r.status]">
@@ -88,7 +88,7 @@
         @let pct = g.target ? (g.saved / g.target) * 100 : 0;
         @let cappedPct = pct > 100 ? 100 : pct;
 
-        <div [style.animation-delay]="i * 40 + 'ms'" class="animate-rise rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)]">
+        <div [style.animation-delay]="i * 40 + 'ms'" class="animate-rise rounded-2xl border border-border bg-card p-4 shadow-[oklch(var(--shadow-soft))]">
           <div class="flex items-center justify-between gap-2">
             <div class="flex min-w-0 items-center gap-2">
               <span class="text-lg" aria-hidden="true">{{ g.emoji }}</span>

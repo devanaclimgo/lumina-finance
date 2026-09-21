@@ -16,6 +16,6 @@ export class CategoryDotComponent {
   private _category = signal<string>("");
 
   backgroundColor = computed(() => {
-    return CATEGORY_COLORS[this._category()] ?? "var(--muted-foreground)";
+    return CATEGORY_COLORS[this._category()] ?? "oklch(var(--muted-foreground))";
   });
 }

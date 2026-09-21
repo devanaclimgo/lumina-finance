@@ -56,9 +56,9 @@ export class DashboardComponent implements OnInit {
   readonly pctChange = pctChange;
 
   readonly legend = [
-    { k: "Income", c: "var(--chart-3)" },
-    { k: "Expenses", c: "var(--chart-4)" },
-    { k: "Balance", c: "var(--chart-1)" },
+    { k: "Income", c: "oklch(var(--chart-3))" },
+    { k: "Expenses", c: "oklch(var(--chart-4))" },
+    { k: "Balance", c: "oklch(var(--chart-1))" },
   ];
 
   period = signal<PeriodKey>("30d");
@@ -91,7 +91,7 @@ export class DashboardComponent implements OnInit {
     this.byCategory().map((c) => ({
       name: c.category,
       value: Math.round(c.amount),
-      color: this.categoryColors[c.category] ?? "var(--chart-1)",
+      color: this.categoryColors[c.category] ?? "oklch(var(--chart-1))",
     })),
   );
 

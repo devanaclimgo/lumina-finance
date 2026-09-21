@@ -114,7 +114,7 @@ export class TransactionsComponent {
   }
 
   categoryColor(category: string): string {
-    return this.categoryColors[category] ?? "var(--muted-foreground)";
+    return this.categoryColors[category] ?? "oklch(var(--muted-foreground))";
   }
 
   isSelected(id: string): boolean {

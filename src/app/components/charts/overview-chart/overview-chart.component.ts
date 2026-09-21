@@ -12,9 +12,9 @@ import { formatCompact } from "../../../lib/format";
 
 ChartJS.register(...registerables);
 
-const axisColor = "var(--muted-foreground)";
+const axisColor = "oklch(var(--muted-foreground))";
 
-const borderColor = "var(--border)";
+const borderColor = "oklch(var(--border))";
 
 const defaultColors: Record<string, string> = {
   income: "oklch(var(--chart-3))",
@@ -126,7 +126,7 @@ export class OverviewChartComponent implements OnChanges {
       labels,
 
       datasets: this.keys.map((key) => {
-        const color = defaultColors[key] ?? "var(--chart-1)";
+        const color = defaultColors[key] ?? "oklch(var(--chart-1))";
 
         return {
           label: key,

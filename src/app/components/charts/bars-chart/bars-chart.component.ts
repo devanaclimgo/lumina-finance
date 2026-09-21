@@ -10,9 +10,9 @@ export interface BarChartKey {
   label: string;
 }
 
-const axisColor = "var(--muted-foreground)";
+const axisColor = "oklch(var(--muted-foreground))";
 
-const borderColor = "var(--border)";
+const borderColor = "oklch(var(--border))";
 
 @Component({
   selector: "app-bars-chart",

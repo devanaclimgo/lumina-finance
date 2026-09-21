@@ -71,7 +71,7 @@
         @let isAgentMsg = isAgent(m.text, m.from);
 
         <div class="animate-rise flex" [ngClass]="isAgentMsg ? 'justify-start' : 'justify-end'">
-          <div class="max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm shadow-[var(--shadow-soft)]" [ngClass]="isAgentMsg ? 'rounded-tl-md bg-accent text-accent-foreground' : 'gradient-primary rounded-tr-md text-primary-foreground'">
+          <div class="max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm shadow-[oklch(var(--shadow-soft))]" [ngClass]="isAgentMsg ? 'rounded-tl-md bg-accent text-accent-foreground' : 'gradient-primary rounded-tr-md text-primary-foreground'">
             <p>{{ displayText(m.text) }}</p>
             <p class="mt-1 text-[10px]" [ngClass]="isAgentMsg ? 'text-muted-foreground' : 'text-primary-foreground/70'">
               {{ formatDate(m.at, 'time') }}

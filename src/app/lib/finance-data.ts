@@ -121,18 +121,18 @@ export const CATEGORIES = [
 ] as const;
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  "Food & Dining": "var(--chart-1)",
-  Housing: "var(--chart-2)",
-  Transportation: "var(--chart-6)",
-  Entertainment: "var(--chart-5)",
-  Shopping: "var(--chart-4)",
-  Health: "var(--chart-3)",
-  Education: "var(--chart-2)",
-  Utilities: "var(--chart-6)",
-  Salary: "var(--chart-3)",
-  Freelance: "var(--chart-3)",
-  Investments: "var(--chart-1)",
-  Other: "var(--muted-foreground)",
+  "Food & Dining": "oklch(var(--chart-1))",
+  Housing: "oklch(var(--chart-2))",
+  Transportation: "oklch(var(--chart-6))",
+  Entertainment: "oklch(var(--chart-5))",
+  Shopping: "oklch(var(--chart-4))",
+  Health: "oklch(var(--chart-3))",
+  Education: "oklch(var(--chart-2))",
+  Utilities: "oklch(var(--chart-6))",
+  Salary: "oklch(var(--chart-3))",
+  Freelance: "oklch(var(--chart-3))",
+  Investments: "oklch(var(--chart-1))",
+  Other: "oklch(var(--muted-foreground))",
 };
 
 export const wallets: Wallet[] = [

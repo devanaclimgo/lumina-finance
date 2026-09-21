@@ -23,7 +23,7 @@ import { BaseChartDirective, provideCharts } from "ng2-charts";
 export class SparklineComponent implements OnChanges {
   @Input() data: number[] = [];
 
-  @Input() color = "var(--chart-1)";
+  @Input() color = "oklch(var(--chart-1))";
 
   @Input() height = 44;
 

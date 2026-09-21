@@ -6,7 +6,7 @@
   </app-page-header>
 
   <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-    <div class="gradient-primary animate-rise relative overflow-hidden rounded-2xl p-5 text-primary-foreground shadow-[var(--shadow-glow)]">
+    <div class="gradient-primary animate-rise relative overflow-hidden rounded-2xl p-5 text-primary-foreground shadow-[oklch(var(--shadow-glow))]">
       <span class="pointer-events-none absolute -right-16 -top-20 h-52 w-52 rounded-full bg-white/15 blur-2xl"></span>
       <p class="relative text-sm text-primary-foreground/80">Portfolio value</p>
       <p class="relative mt-1 text-3xl font-bold num">
@@ -54,7 +54,7 @@
   <app-section-card title="Holdings" description="Tap a column chip to re-sort">
     <div actions class="inline-flex items-center gap-0.5 rounded-full border border-border bg-muted/60 p-1">
       @for (k of sortKeys; track k) {
-      <button type="button" class="rounded-full px-3 py-1 text-xs font-medium capitalize transition-all duration-300" ngClass="sortKey() === k ? 'bg-card text-foreground shadow-[var(--shadow-soft)]' : 'text-muted-foreground hover:text-foreground'" (click)="setSortKey(k)">
+      <button type="button" class="rounded-full px-3 py-1 text-xs font-medium capitalize transition-all duration-300" ngClass="sortKey() === k ? 'bg-card text-foreground shadow-[oklch(var(--shadow-soft))]' : 'text-muted-foreground hover:text-foreground'" (click)="setSortKey(k)">
         {{ k }}
       </button>
       }
@@ -76,7 +76,7 @@
         </div>
 
         <div class="hidden sm:block">
-          <app-sparkline [data]="h.spark" [color]="up ? 'var(--chart-3)' : 'var(--chart-4)'" [height]="34"></app-sparkline>
+          <app-sparkline [data]="h.spark" [color]="up ? 'oklch(var(--chart-3))' : 'oklch(var(--chart-4))'" [height]="34"></app-sparkline>
         </div>
 
         <div class="hidden text-right sm:block">

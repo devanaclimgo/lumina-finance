@@ -100,8 +100,8 @@ export class BudgetPageComponent {
   );
 
   readonly chartKeys = [
-    { key: "limit", color: "var(--chart-2)", label: "Limit" },
-    { key: "spent", color: "var(--chart-1)", label: "Spent" },
+    { key: "limit", color: "oklch(var(--chart-2))", label: "Limit" },
+    { key: "spent", color: "oklch(var(--chart-1))", label: "Spent" },
   ];
 
   prepareNewBudget(): void {

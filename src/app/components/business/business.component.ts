@@ -117,7 +117,7 @@ export class BusinessComponent {
     })),
   );
 
-  chartKeys = [{ key: "value", color: "var(--chart-1)", label: "Value" }];
+  chartKeys = [{ key: "value", color: "oklch(var(--chart-1))", label: "Value" }];
 
   summaryCards = computed(() => [
     { label: "Revenue (90d)", value: this.totalsData().income, formatter: formatCurrency },

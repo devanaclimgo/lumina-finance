@@ -80,7 +80,7 @@
 
     <div class="flex gap-4 overflow-x-auto pb-1">
       @for (w of wsWallets(); track w.id; let i = $index) {
-      <div [style.animation-delay]="i * 60 + 'ms'" class="animate-rise surface-hover relative w-[248px] shrink-0 overflow-hidden rounded-2xl border border-border bg-[image:var(--gradient-surface)] p-4">
+      <div [style.animation-delay]="i * 60 + 'ms'" class="animate-rise surface-hover relative w-[248px] shrink-0 overflow-hidden rounded-2xl border border-border bg-[image:oklch(var(--gradient-surface))] p-4">
         <div class="flex items-start justify-between">
           <div class="min-w-0">
             <p class="truncate text-sm font-semibold">{{ w.name }}</p>
@@ -95,7 +95,7 @@
         <p class="text-[11px] capitalize text-muted-foreground">{{ w.type }} · {{ w.currency }}</p>
 
         <div class="mt-2 -mx-1">
-          <app-sparkline [data]="w.trend" [color]="w.balance >= 0 ? 'var(--chart-3)' : 'var(--chart-4)'" [height]="36"></app-sparkline>
+          <app-sparkline [data]="w.trend" [color]="w.balance >= 0 ? 'oklch(var(--chart-3))' : 'oklch(var(--chart-4))'" [height]="36"></app-sparkline>
         </div>
       </div>
       }

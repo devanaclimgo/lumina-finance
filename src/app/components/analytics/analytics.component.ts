@@ -109,7 +109,7 @@ export class AnalyticsPageComponent implements OnInit {
       .map((c) => ({
         name: c.category,
         value: Math.round(c.amount),
-        color: CATEGORY_COLORS[c.category] ?? "var(--chart-6)",
+        color: CATEGORY_COLORS[c.category] ?? "oklch(var(--chart-6))",
       })),
   );
 
@@ -182,7 +182,7 @@ export class AnalyticsPageComponent implements OnInit {
   cn = cn;
   formatCurrency = formatCurrency;
   formatPercent = formatPercent;
-  getCategoryColor = (cat: string) => CATEGORY_COLORS[cat] ?? "var(--chart-6)";
+  getCategoryColor = (cat: string) => CATEGORY_COLORS[cat] ?? "oklch(var(--chart-6))";
 
   ngOnInit() {
     this.titleService.setTitle("Spending Analytics — Luma");
