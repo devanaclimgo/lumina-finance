@@ -2,7 +2,29 @@ import { Component, computed, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgClass } from "@angular/common";
 
-import { createRdxAlertDialogHandle, UbAlertDialogActionDirective, UbAlertDialogBackdropDirective, UbAlertDialogCloseDirective, UbAlertDialogDescriptionDirective, UbAlertDialogFooterDirective, UbAlertDialogHeaderDirective, UbAlertDialogPopupComponent, UbAlertDialogPortalDirective, UbAlertDialogRootDirective, UbAlertDialogTitleDirective, UbAlertDialogTriggerDirective } from "../../shared/components/ui/alert-dialog";
+import {
+  createRdxAlertDialogHandle,
+  UbAlertDialogActionDirective,
+  UbAlertDialogBackdropDirective,
+  UbAlertDialogCloseDirective,
+  UbAlertDialogDescriptionDirective,
+  UbAlertDialogFooterDirective,
+  UbAlertDialogHeaderDirective,
+  UbAlertDialogPopupComponent,
+  UbAlertDialogPortalDirective,
+  UbAlertDialogRootDirective,
+  UbAlertDialogTitleDirective,
+  UbAlertDialogTriggerDirective,
+} from "../../shared/components/ui/alert-dialog";
+import { NgIcon, provideIcons } from "@ng-icons/core";
+import {
+  lucidePlus,
+  lucideSearch,
+  lucideX,
+  lucideTrash2,
+  lucidePencil,
+  lucideCopy,
+} from "@ng-icons/lucide";
 
 import { FinanceStoreService } from "../../services/store.service";
 import { ToastService } from "../../services/toast.service";
@@ -23,6 +45,7 @@ type SortKey = "date-desc" | "date-asc" | "amount-desc" | "amount-asc";
   selector: "app-transactions",
   imports: [
     NgClass,
+    NgIcon,
     FormsModule,
     PageHeaderComponent,
     StatCardComponent,
@@ -40,6 +63,16 @@ type SortKey = "date-desc" | "date-asc" | "amount-desc" | "amount-asc";
     UbAlertDialogTitleDirective,
     UbAlertDialogDescriptionDirective,
     UbAlertDialogActionDirective,
+  ],
+  providers: [
+    provideIcons({
+      lucidePlus,
+      lucideSearch,
+      lucideX,
+      lucideTrash2,
+      lucidePencil,
+      lucideCopy,
+    }),
   ],
   host: {
     class: "flex flex-col gap-4",
